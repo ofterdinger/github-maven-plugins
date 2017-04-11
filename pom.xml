@@ -57,6 +57,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <last.released.version>0.12</last.released.version>
     </properties>
 
     <build>
@@ -151,6 +152,115 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!--
+        <![CDATA[
+        Usage:
+        1. set environment variable GITHUB_GIT_SERVICE_TOKEN
+
+        2. To publish a release
+           Following actions can be automated using the maven-release-plugin
+             1. Commit any modifications
+             2. Remove the -SNAPSHOT from the version number
+             3. Deploy the module to the release-repository
+             4. Tag the source code with the version number
+             5. Increment the version number and append -SNAPSHOT
+            see: https://dzone.com/articles/configuring-the-maven-release-plugin-to-skip-tests
+
+              mvn -DpreparationGoals=compile -Darguments="" release:prepare
+              mvn -Darguments="-DskipTests" release:perform
+
+            Delete tag on release failed, see: https://www.abeautifulsite.net/how-to-delete-a-tag-on-github
+            Example:
+              git tag -d ${tag}
+              git push origin :${tag}
+        3. To publish a snapshot
+            mvn -Dmaven.test.skip=true clean package deploy
+
+        Note:
+            Create a empty mvn-repo branch on github
+            git checkout \-\-orphan mvn-repo
+            git rm -rf .
+            git commit \-\-allow-empty -m "root commit"
+            git push origin mvn-repo
+
+            Clean existing gh-pages branch
+            git push origin \-\-delete <branch_name>
+            git branch -d <branch_name>
+        ]]>
+        -->
+        <profile>
+            <id>deploy-artifact</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <github.global.server>github</github.global.server>
+                <github.global.oauth2Token>${env.GITHUB_GIT_SERVICE_TOKEN}</github.global.oauth2Token>
+            </properties>
+            <distributionManagement>
+                <repository>
+                    <id>internal.repo</id>
+                    <name>Temporary Staging Repository</name>
+                    <url>file://${project.build.directory}/mvn-repo</url>
+                </repository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>2.5.3</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.maven.scm</groupId>
+                                <artifactId>maven-scm-provider-gitexe</artifactId>
+                                <version>1.9.5</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <useReleaseProfile>false</useReleaseProfile>
+                            <arguments>${arguments}</arguments>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <version>2.8.2</version>
+                        <configuration>
+                            <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.github.github</groupId>
+                        <artifactId>site-maven-plugin</artifactId>
+                        <version>${last.released.version}</version>
+                        <configuration>
+                            <!-- git commit message -->
+                            <message>Maven artifacts for ${project.artifactId}-${project.version}</message>
+                            <!-- disable webpage processing -->
+                            <noJekyll>true</noJekyll>
+                            <merge>true</merge>
+                            <!-- matches distribution management repository url above -->
+                            <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
+                            <!-- remote branch name -->
+                            <branch>refs/heads/mvn-repo</branch>
+                            <includes><include>**/*</include></includes>
+                            <!-- github repo name -->
+                            <repositoryName>maven-plugins</repositoryName>
+                            <!-- github username  -->
+                            <repositoryOwner>home1-oss</repositoryOwner>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>site</goal>
+                                </goals>
+                                <phase>deploy</phase>
                             </execution>
                         </executions>
                     </plugin>
