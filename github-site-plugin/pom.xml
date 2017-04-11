@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.github.github</groupId>
         <artifactId>github-maven-plugins-parent</artifactId>
-        <version>0.13-M1</version>
+        <version>0.13.0.OSS-M1</version>
     </parent>
 
     <artifactId>site-maven-plugin</artifactId>
@@ -12,10 +12,6 @@
     <name>GitHub Site Maven Plugin</name>
     <url>https://github.com/github/maven-plugins</url>
     <description>Maven plugin that commits files to a branch in a GitHub repository</description>
-
-    <properties>
-        <last.released.version>0.9</last.released.version>
-    </properties>
 
     <build>
         <plugins>
@@ -34,25 +30,6 @@
                     </dependency>
                 </dependencies>
             </plugin>
-            <plugin>
-                <groupId>com.github.github</groupId>
-                <artifactId>site-maven-plugin</artifactId>
-                <version>${last.released.version}</version>
-                <configuration>
-                    <message>Generated site for ${project.artifactId} ${project.version}</message>
-                    <path>site-plugin</path>
-                    <merge>true</merge>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>site</goal>
-                        </goals>
-                        <phase>site-deploy</phase>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
@@ -150,4 +127,34 @@
         </plugins>
     </reporting>
 
+    <profiles>
+        <profile>
+            <id>publish-site</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.github</groupId>
+                        <artifactId>site-maven-plugin</artifactId>
+                        <version>${last.released.version}</version>
+                        <configuration>
+                            <message>Generated site for ${project.artifactId} ${project.version}</message>
+                            <path>site-plugin</path>
+                            <merge>true</merge>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>site</goal>
+                                </goals>
+                                <phase>site-deploy</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

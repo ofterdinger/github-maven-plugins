@@ -1,5 +1,20 @@
 
-This fork of includes code that makes uploads go faster. To use it, clone this repo, run `mvn clean install` and use version 0.13-M1 instead of version 0.12 of `site-maven-plugin`.
+This fork of includes code that makes uploads go faster. To use it, clone this repo, run `mvn clean install` and use version 0.13.0.OSS-M1 instead of version 0.12 of `site-maven-plugin`.
+
+```xml
+<pluginRepository>
+  <id>oss-github-maven-plugins</id>
+  <url>https://raw.github.com/home1-oss/maven-plugins/mvn-repo</url>
+  <name>Forked github-maven-plugins that upload faster</name>
+  <layout>default</layout>
+  <snapshots>
+    <enabled>true</enabled>
+  </snapshots>
+  <releases>
+    <enabled>true</enabled>
+  </releases>
+</pluginRepository>
+```
 
 
 # GitHub Maven Plugins [![Build Status](https://travis-ci.org/github/maven-plugins.svg)](https://travis-ci.org/github/maven-plugins)
