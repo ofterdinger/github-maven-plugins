@@ -253,7 +253,7 @@
                             <!-- github repo name -->
                             <repositoryName>maven-plugins</repositoryName>
                             <!-- github username  -->
-                            <repositoryOwner>home1-oss</repositoryOwner>
+                            <repositoryOwner>ci-and-cd</repositoryOwner>
                         </configuration>
                         <executions>
                             <execution>
