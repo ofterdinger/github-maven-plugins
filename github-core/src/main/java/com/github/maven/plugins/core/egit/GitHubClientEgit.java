@@ -29,7 +29,7 @@ import org.eclipse.egit.github.core.client.GitHubClient;
 
 /**
  * GitHubClient support proxy
- * 
+ *
  * @author Kiyofumi Kondoh
  */
 public class GitHubClientEgit extends GitHubClient {
@@ -45,11 +45,13 @@ public class GitHubClientEgit extends GitHubClient {
 	public GitHubClientEgit(String hostname, int port, String scheme) {
 		super(hostname, port, scheme);
 	}
-	
+
 	protected Proxy proxy;
 
-	public void setProxy(Proxy proxy) {
+	@Override
+	public GitHubClient setProxy(Proxy proxy) {
 		this.proxy = proxy;
+		return this;
 	}
 
 	@Override

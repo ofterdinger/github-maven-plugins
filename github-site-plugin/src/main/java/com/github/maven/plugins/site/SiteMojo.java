@@ -44,6 +44,8 @@ import java.util.List;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Settings;
 import org.eclipse.egit.github.core.Blob;
@@ -66,14 +68,9 @@ import org.eclipse.egit.github.core.util.EncodingUtils;
  * local Git repository is not used.
  *
  * @author Kevin Sawicki (kevin@github.com)
- * @goal site
  */
+@Mojo(name = "site")
 public class SiteMojo extends GitHubProjectMojo {
-
-	/**
-	 * BRANCH_DEFAULT
-	 */
-	public static final String BRANCH_DEFAULT = "refs/heads/gh-pages";
 
 	/**
 	 * NO_JEKYLL_FILE
@@ -82,165 +79,134 @@ public class SiteMojo extends GitHubProjectMojo {
 
 	/**
 	 * Branch to update
-	 *
-	 * @parameter default-value="refs/heads/gh-pages"
 	 */
-	private String branch = BRANCH_DEFAULT;
+	@Parameter(defaultValue = "refs/heads/gh-pages")
+	private String branch;
 
 	/**
 	 * Path of tree
-	 *
-	 * @parameter
 	 */
+	@Parameter
 	private String path;
 
 	/**
 	 * The commit message used when committing the site.
-	 *
-	 * @parameter
-	 * @required
 	 */
+	@Parameter(required = true)
 	private String message;
 
 	/**
 	 * The name of the repository. This setting must be set if the project's url and scm metadata are not set.
-	 *
-	 * @parameter expression="${github.site.repositoryName}"
 	 */
+	@Parameter(property = "github.site.repositoryName")
 	private String repositoryName;
 
 	/**
 	 * The owner of repository. This setting must be set if the project's url and scm metadata are not set.
-	 *
-	 * @parameter expression="${github.site.repositoryOwner}"
 	 */
+	@Parameter(property = "github.site.repositoryOwner")
 	private String repositoryOwner;
 
 	/**
 	 * The user name for authentication
-	 *
-	 * @parameter expression="${github.site.userName}"
-	 *            default-value="${github.global.userName}"
 	 */
+	@Parameter(property = "github.site.userName", defaultValue = "${github.global.userName}")
 	private String userName;
 
 	/**
 	 * The password for authentication
-	 *
-	 * @parameter expression="${github.site.password}"
-	 *            default-value="${github.global.password}"
 	 */
+	@Parameter(property = "github.site.password", defaultValue = "${github.global.password}")
 	private String password;
 
 	/**
 	 * The oauth2 token for authentication
-	 *
-	 * @parameter expression="${github.site.oauth2Token}"
-	 *            default-value="${github.global.oauth2Token}"
 	 */
+	@Parameter(property = "github.site.oauth2Token", defaultValue = "${github.global.oauth2Token}")
 	private String oauth2Token;
 
 	/**
 	 * The Host for API calls.
-	 *
-	 * @parameter expression="${github.site.host}"
-	 *            default-value="${github.global.host}"
 	 */
+	@Parameter(property = "github.site.host", defaultValue = "${github.global.host}")
 	private String host;
 
 	/**
 	 * The <em>id</em> of the server to use to retrieve the Github credentials. This id must identify a
      * <em>server</em> from your <em>setting.xml</em> file.
-	 *
-	 * @parameter expression="${github.site.server}"
-	 *            default-value="${github.global.server}"
 	 */
+	@Parameter(property = "github.site.server", defaultValue = "${github.global.server}")
 	private String server;
 
 	/**
 	 * Paths and patterns to include
-	 *
-	 * @parameter
 	 */
+	@Parameter
 	private String[] includes;
 
 	/**
 	 * Paths and patterns to exclude
-	 *
-	 * @parameter
 	 */
+	@Parameter
 	private String[] excludes;
 
 	/**
 	 * The base directory to commit files from. <em>target/site</em> by default.
-	 *
-	 * @parameter expression="${siteOutputDirectory}"
-	 *            default-value="${project.reporting.outputDirectory}"
-	 * @required
 	 */
+	@Parameter(property = "siteOutputDirectory", defaultValue = "${project.reporting.outputDirectory}", required = true)
 	private File outputDirectory;
 
 	/**
 	 * The project being built
-	 *
-	 * @parameter expression="${project}
-	 * @required
 	 */
+	@Parameter(defaultValue = "${project}", required = true, readonly = true)
 	private MavenProject project;
 
 	/**
 	 * The Maven session
-	 *
-	 * @parameter expression="${session}
 	 */
+	@Parameter(defaultValue = "${session}", required = true, readonly = true)
 	private MavenSession session;
 
 	/**
 	 * The Maven settings
-	 *
-	 * @parameter expression="${settings}
 	 */
+	@Parameter(defaultValue = "${settings}", required = true, readonly = true)
 	private Settings settings;
 
 	/**
 	 * Force reference update
-	 *
-	 * @parameter expression="${github.site.force}"
 	 */
+	@Parameter(property = "github.site.force")
 	private boolean force;
 
 	/**
 	 * Set it to {@code true} to always create a '.nojekyll' file at the root of the site if one
 	 * doesn't already exist.
-	 *
-	 * @parameter expression="${github.site.noJekyll}"
 	 */
+	@Parameter(property = "github.site.noJekyll")
 	private boolean noJekyll;
 
 	/**
 	 * Set it to {@code true} to merge with existing the existing tree that is referenced by the commit
 	 * that the ref currently points to
-	 *
-	 * @parameter expression="${github.site.merge}"
 	 */
+	@Parameter(property = "github.site.merge")
 	private boolean merge;
 
 	/**
 	 * Show what blob, trees, commits, and references would be created/updated
 	 * but don't actually perform any operations on the target GitHub
 	 * repository.
-	 *
-	 * @parameter expression="${github.site.dryRun}"
 	 */
+	@Parameter(property = "github.site.dryRun")
 	private boolean dryRun;
 
     /**
      * Skip the site upload.
-     *
-     * @parameter expression="${github.site.skip}"
-     *            default-value="false"
      * @since 0.9
      */
+	@Parameter(property = "github.site.skip", defaultValue = "false")
     private boolean skip;
 
 	/**

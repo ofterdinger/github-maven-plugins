@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.github.github</groupId>
         <artifactId>github-maven-plugins-parent</artifactId>
-        <version>0.13.0.OSS-M1</version>
+        <version>0.14.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>site-maven-plugin</artifactId>
@@ -16,9 +16,7 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>3.3</version>
                 <configuration>
                     <skipDeploy>true</skipDeploy>
                 </configuration>
@@ -31,19 +29,20 @@
                 </dependencies>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.0</version>
                 <executions>
+                    <execution>
+                        <id>plugin.descriptor</id>
+                        <goals>
+                            <goal>descriptor</goal>
+                        </goals>
+                    </execution>
                     <execution>
                         <id>generated-helpmojo</id>
                         <goals>
                             <goal>helpmojo</goal>
                             <!--<goal>report</goal>-->
                         </goals>
-                        <configuration>
-                            <goalPrefix>ghSite</goalPrefix>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -51,6 +50,13 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.maven.plugin-tools</groupId>
+            <artifactId>maven-plugin-annotations</artifactId>
+            <version>3.6.1</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>com.github.github</groupId>
             <artifactId>github-maven-core</artifactId>
@@ -60,7 +66,7 @@
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
-            <version>3.0.1</version>
+            <version>3.4.0</version>
         </dependency>
     </dependencies>
 
@@ -70,34 +76,25 @@
                 <artifactId>maven-plugin-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
-                <version>2.3</version>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-                <version>2.6</version>
                 <configuration>
                     <linkXRef>true</linkXRef>
                     <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
                     <minimumTokens>100</minimumTokens>
-                    <targetJdk>1.5</targetJdk>
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.6</version>
                 <configuration>
                     <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
                     <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.8</version>
                 <configuration>
                     <quiet>true</quiet>
                     <links>
@@ -106,9 +103,7 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.10</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
