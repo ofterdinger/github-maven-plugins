@@ -91,10 +91,10 @@ public class ClientCredentialsTest {
 		@Override
 		public GitHubClient createClient(String host, String userName,
 				String password, String oauth2Token, String serverId,
-				Settings settings, MavenSession session)
+				Settings settings)
 				throws MojoExecutionException {
 			return super.createClient(host, userName, password, oauth2Token,
-					serverId, settings, session);
+					serverId, settings);
 		}
 
 		public void execute() throws MojoExecutionException,
@@ -112,7 +112,7 @@ public class ClientCredentialsTest {
 	public void validUserNameAndPassword() throws Exception {
 		TestMojo mojo = new TestMojo();
 		GitHubClient client = mojo.createClient(null, "a", "b", null, null,
-				null, null);
+				null);
 		assertNotNull(client);
 		assertEquals("a", mojo.user.get());
 		assertEquals("b", mojo.password.get());
@@ -127,7 +127,7 @@ public class ClientCredentialsTest {
 	@Test(expected = MojoExecutionException.class)
 	public void noUserName() throws Exception {
 		TestMojo mojo = new TestMojo();
-		mojo.createClient(null, "a", null, null, null, null, null);
+		mojo.createClient(null, "a", null, null, null, null);
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class ClientCredentialsTest {
 	@Test(expected = MojoExecutionException.class)
 	public void noPassword() throws Exception {
 		TestMojo mojo = new TestMojo();
-		mojo.createClient(null, null, "b", null, null, null, null);
+		mojo.createClient(null, null, "b", null, null, null);
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class ClientCredentialsTest {
 	public void validOAuth2Token() throws Exception {
 		TestMojo mojo = new TestMojo();
 		GitHubClient client = mojo.createClient(null, null, null, "token",
-				null, null, null);
+				null, null);
 		assertNotNull(client);
 		assertNull(mojo.user.get());
 		assertNull(mojo.password.get());
@@ -166,7 +166,7 @@ public class ClientCredentialsTest {
 	public void validOAuth2TokenWithUsername() throws Exception {
 		TestMojo mojo = new TestMojo();
 		GitHubClient client = mojo.createClient(null, "a", null, "token", null,
-				null, null);
+				null);
 		assertNotNull(client);
 		assertNull(mojo.user.get());
 		assertNull(mojo.password.get());
@@ -188,7 +188,7 @@ public class ClientCredentialsTest {
 		server.setPassword("b");
 		settings.addServer(server);
 		GitHubClient client = mojo.createClient(null, null, null, null,
-				"server", settings, null);
+				"server", settings);
 		assertNotNull(client);
 		assertEquals("a", mojo.user.get());
 		assertEquals("b", mojo.password.get());
@@ -209,7 +209,7 @@ public class ClientCredentialsTest {
 		server.setUsername("");
 		server.setPassword("");
 		settings.addServer(server);
-		mojo.createClient(null, null, null, null, "server", settings, null);
+		mojo.createClient(null, null, null, null, "server", settings);
 	}
 
 	/**
@@ -226,7 +226,7 @@ public class ClientCredentialsTest {
 		server.setPassword("b");
 		settings.addServer(server);
 		GitHubClient client = mojo.createClient(null, null, null, null,
-				"server", settings, null);
+				"server", settings);
 		assertNotNull(client);
 		assertNull(mojo.user.get());
 		assertNull(mojo.password.get());
@@ -241,7 +241,7 @@ public class ClientCredentialsTest {
 	@Test(expected = MojoExecutionException.class)
 	public void missingServerNoSettings() throws Exception {
 		TestMojo mojo = new TestMojo();
-		mojo.createClient(null, null, null, null, "server", null, null);
+		mojo.createClient(null, null, null, null, "server", null);
 	}
 
 	/**
@@ -253,7 +253,7 @@ public class ClientCredentialsTest {
 	public void missingServerNullServers() throws Exception {
 		TestMojo mojo = new TestMojo();
 		Settings settings = new Settings();
-		mojo.createClient(null, null, null, null, "server", settings, null);
+		mojo.createClient(null, null, null, null, "server", settings);
 	}
 
 	/**
@@ -266,7 +266,7 @@ public class ClientCredentialsTest {
 		TestMojo mojo = new TestMojo();
 		Settings settings = new Settings();
 		settings.setServers(Collections.<Server> emptyList());
-		mojo.createClient(null, null, null, null, "server", settings, null);
+		mojo.createClient(null, null, null, null, "server", settings);
 	}
 
 	/**
@@ -282,7 +282,7 @@ public class ClientCredentialsTest {
 		server.setId("server2");
 		server.setPassword("b");
 		settings.addServer(server);
-		mojo.createClient(null, null, null, null, "server", settings, null);
+		mojo.createClient(null, null, null, null, "server", settings);
 	}
 
 	/**
@@ -293,7 +293,7 @@ public class ClientCredentialsTest {
 	@Test(expected = MojoExecutionException.class)
 	public void noConfiguration() throws Exception {
 		TestMojo mojo = new TestMojo();
-		mojo.createClient(null, null, null, null, null, null, null);
+		mojo.createClient(null, null, null, null, null, null);
 	}
 
 	/**
@@ -305,6 +305,6 @@ public class ClientCredentialsTest {
 	public void noConfigurationWithSettings() throws Exception {
 		TestMojo mojo = new TestMojo();
 		Settings settings = new Settings();
-		mojo.createClient(null, null, null, null, null, settings, null);
+		mojo.createClient(null, null, null, null, null, settings);
 	}
 }

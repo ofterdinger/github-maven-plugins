@@ -30,6 +30,10 @@ import org.codehaus.plexus.util.DirectoryScanner;
  */
 public class PathUtils {
 
+	private PathUtils() {
+		// avoid instances
+	}
+
 	/**
 	 * Get matching paths found in given base directory
 	 *

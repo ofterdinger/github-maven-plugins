@@ -277,7 +277,6 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <!-- More recent version incompatible with Guice from Maven / Sisu -->
             <version>30.1.1-jre</version>
         </dependency>
 

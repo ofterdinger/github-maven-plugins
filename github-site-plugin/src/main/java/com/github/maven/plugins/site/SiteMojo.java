@@ -224,9 +224,8 @@ public class SiteMojo extends GitHubProjectMojo {
 		final long length = file.length();
 		final int size = length > MAX_VALUE ? MAX_VALUE : (int) length;
 		ByteArrayOutputStream output = new ByteArrayOutputStream(size);
-		FileInputStream stream = null;
-		try {
-			stream = new FileInputStream(file);
+
+		try (FileInputStream stream = new FileInputStream(file);) {
 			final byte[] buffer = new byte[8192];
 			int read;
 			while ((read = stream.read(buffer)) != -1)
@@ -234,13 +233,6 @@ public class SiteMojo extends GitHubProjectMojo {
 		} catch (IOException e) {
 			throw new MojoExecutionException("Error reading file: "
 					+ getExceptionMessage(e), e);
-		} finally {
-			if (stream != null)
-				try {
-					stream.close();
-				} catch (IOException e) {
-					debug("Exception closing stream", e);
-				}
 		}
 
 		Blob blob = new Blob().setEncoding(ENCODING_BASE64);
@@ -319,10 +311,10 @@ public class SiteMojo extends GitHubProjectMojo {
 
 	private void doExecute(RepositoryId repository, String[] paths) throws MojoExecutionException {
 		DataService service = new DataService(createClient(host, userName,
-				password, oauth2Token, server, settings, session));
+				password, oauth2Token, server, settings));
 
 		// Write blobs and build tree entries
-		List<TreeEntry> entries = new ArrayList<TreeEntry>(paths.length);
+		List<TreeEntry> entries = new ArrayList<>(paths.length);
 		String prefix = path;
 		if (prefix == null)
 			prefix = "";

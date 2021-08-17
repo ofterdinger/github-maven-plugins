@@ -46,7 +46,7 @@ public class GitHubClientEgit extends GitHubClient {
 		super(hostname, port, scheme);
 	}
 
-	protected Proxy proxy;
+	private Proxy proxy;
 
 	@Override
 	public GitHubClient setProxy(Proxy proxy) {
