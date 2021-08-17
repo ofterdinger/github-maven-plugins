@@ -1,145 +1,148 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.github</groupId>
-    <artifactId>github-maven-plugins-parent</artifactId>
-    <version>0.14.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+  <parent>
+    <groupId>de.ofterdinger</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.0.13-SNAPSHOT</version>
+  </parent>
 
-    <parent>
-        <groupId>de.ofterdinger</groupId>
-        <artifactId>parent</artifactId>
-        <version>0.0.13-SNAPSHOT</version>
-    </parent>
+  <groupId>com.github.github</groupId>
+  <artifactId>github-maven-plugins-parent</artifactId>
+  <version>0.14.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
-    <modules>
-        <module>github-core</module>
-        <module>github-site-plugin</module>
-    </modules>
+  <modules>
+    <module>github-core</module>
+    <module>github-site-plugin</module>
+  </modules>
 
-    <name>GitHub Maven Plugins</name>
-    <description>GitHub Maven plugins</description>
+  <name>GitHub Maven Plugins</name>
+  <description>GitHub Maven plugins</description>
+  <url>https://github.com/ofterdinger/github-maven-plugins</url>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>http://www.opensource.org/licenses/mit-license.php</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
     <url>https://github.com/github/maven-plugins</url>
+    <connection>scm:git:git://github.com/github/maven-plugins.git</connection>
+    <developerConnection>scm:git:git@github.com:github/maven-plugins.git</developerConnection>
+  </scm>
 
-    <issueManagement>
-        <url>https://github.com/github/maven-plugins/issues</url>
-        <system>GitHub</system>
-    </issueManagement>
+  <developers>
+    <developer>
+      <email>kevin@github.com</email>
+      <name>Kevin Sawicki</name>
+      <url>https://github.com/kevinsawicki</url>
+      <id>kevinsawicki</id>
+    </developer>
+    <developer>
+      <email>clement.escoffier@[NO SPAM]gmail.com</email>
+      <name>Clement Escoffier</name>
+      <id>cescoffier</id>
+    </developer>
+    <developer>
+      <name>Markus Ofterdinger</name>
+      <email>markus@ofterdinger.de</email>
+      <organization>Markus Ofterdinger</organization>
+      <organizationUrl>https://github.com/ofterdinger</organizationUrl>
+    </developer>
+  </developers>
 
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>http://www.opensource.org/licenses/mit-license.php</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <last.released.version>0.12</last.released.version>
+    <maven.version>3.6.3</maven.version>
+  </properties>
 
-    <scm>
-        <url>https://github.com/github/maven-plugins</url>
-        <connection>scm:git:git://github.com/github/maven-plugins.git</connection>
-        <developerConnection>scm:git:git@github.com:github/maven-plugins.git</developerConnection>
-    </scm>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <!-- avoiding javadoc warnings caused by Mojo annotations -->
+          <tagletArtifacts>
+            <tagletArtifact>
+              <groupId>org.apache.maven.plugin-tools</groupId>
+              <artifactId>maven-plugin-tools-javadoc</artifactId>
+              <version>2.9</version>
+            </tagletArtifact>
+          </tagletArtifacts>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <skipDeploy>true</skipDeploy>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>net.ju-n.maven.doxia</groupId>
+            <artifactId>doxia-module-markdown</artifactId>
+            <version>1.0.0</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
 
-    <developers>
-        <developer>
-            <email>kevin@github.com</email>
-            <name>Kevin Sawicki</name>
-            <url>https://github.com/kevinsawicki</url>
-            <id>kevinsawicki</id>
-        </developer>
-        <developer>
-            <email>clement.escoffier@[NO SPAM]gmail.com</email>
-            <name>Clement Escoffier</name>
-            <id>cescoffier</id>
-        </developer>
-    </developers>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <last.released.version>0.12</last.released.version>
-        <maven.version>3.6.3</maven.version>
-    </properties>
-
-    <build>
+  <profiles>
+    <profile>
+      <id>sign</id>
+      <build>
         <plugins>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <!-- avoiding javadoc warnings caused by Mojo annotations -->
-                    <tagletArtifacts>
-                        <tagletArtifact>
-                            <groupId>org.apache.maven.plugin-tools</groupId>
-                            <artifactId>maven-plugin-tools-javadoc</artifactId>
-                            <version>2.9</version>
-                        </tagletArtifact>
-                    </tagletArtifacts>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-site-plugin</artifactId>
-                <configuration>
-                    <skipDeploy>true</skipDeploy>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>net.ju-n.maven.doxia</groupId>
-                        <artifactId>doxia-module-markdown</artifactId>
-                        <version>1.0.0</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
+          <plugin>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
-    </build>
-
-    <profiles>
-        <profile>
-            <id>sign</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+      </build>
+    </profile>
         <!--
         <![CDATA[
         Usage:
@@ -176,135 +179,155 @@
             git branch -d <branch_name>
         ]]>
         -->
-        <profile>
-            <id>deploy-artifact</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <github.global.server>github</github.global.server>
-                <github.global.oauth2Token>${env.GITHUB_GIT_SERVICE_TOKEN}</github.global.oauth2Token>
-            </properties>
-            <distributionManagement>
-                <repository>
-                    <id>internal.repo</id>
-                    <name>Temporary Staging Repository</name>
-                    <url>file://${project.build.directory}/mvn-repo</url>
-                </repository>
-            </distributionManagement>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-release-plugin</artifactId>
-                        <dependencies>
-                            <dependency>
-                                <groupId>org.apache.maven.scm</groupId>
-                                <artifactId>maven-scm-provider-gitexe</artifactId>
-                                <version>1.11.2</version>
-                            </dependency>
-                        </dependencies>
-                        <configuration>
-                            <useReleaseProfile>false</useReleaseProfile>
-                            <arguments>${arguments}</arguments>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <configuration>
-                            <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>com.github.github</groupId>
-                        <artifactId>site-maven-plugin</artifactId>
-                        <version>${last.released.version}</version>
-                        <configuration>
-                            <!-- git commit message -->
-                            <message>Maven artifacts for ${project.artifactId}-${project.version}</message>
-                            <!-- disable webpage processing -->
-                            <noJekyll>true</noJekyll>
-                            <merge>true</merge>
-                            <!-- matches distribution management repository url above -->
-                            <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
-                            <!-- remote branch name -->
-                            <branch>refs/heads/mvn-repo</branch>
-                            <includes><include>**/*</include></includes>
-                            <!-- github repo name -->
-                            <repositoryName>maven-plugins</repositoryName>
-                            <!-- github username  -->
-                            <repositoryOwner>ci-and-cd</repositoryOwner>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>site</goal>
-                                </goals>
-                                <phase>deploy</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-plugin-api</artifactId>
-            <version>${maven.version}</version>
-<!--             <scope>provided</scope>
- -->        </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-core</artifactId>
-            <version>${maven.version}</version>
-<!--             <scope>provided</scope>
- -->        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.mylyn.github</groupId>
-            <artifactId>org.eclipse.egit.github.core</artifactId>
-            <version>5.12.0.202106070339-r</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.7</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>30.1.1-jre</version>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.easytesting</groupId>
-            <artifactId>fest-assert</artifactId>
-            <version>1.4</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
-    <repositories>
+    <profile>
+      <id>deploy-artifact</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <github.global.server>github</github.global.server>
+        <github.global.oauth2Token>${env.GITHUB_GIT_SERVICE_TOKEN}</github.global.oauth2Token>
+      </properties>
+      <distributionManagement>
         <repository>
-            <id>egit</id>
-            <name>Eclipse egit</name>
-            <url>https://repo.eclipse.org/content/repositories/egit-releases/</url>
+          <id>internal.repo</id>
+          <name>Temporary Staging Repository</name>
+          <url>file://${project.build.directory}/mvn-repo</url>
         </repository>
-    </repositories>
+      </distributionManagement>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-release-plugin</artifactId>
+            <dependencies>
+              <dependency>
+                <groupId>org.apache.maven.scm</groupId>
+                <artifactId>maven-scm-provider-gitexe</artifactId>
+                <version>1.11.3</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <useReleaseProfile>false</useReleaseProfile>
+              <arguments>${arguments}</arguments>
+            </configuration>
+          </plugin>
+          <plugin>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <configuration>
+              <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>com.github.github</groupId>
+            <artifactId>site-maven-plugin</artifactId>
+            <version>${last.released.version}</version>
+            <configuration>
+              <!-- git commit message -->
+              <message>Maven artifacts for ${project.artifactId}-${project.version}</message>
+              <!-- disable webpage processing -->
+              <noJekyll>true</noJekyll>
+              <merge>true</merge>
+              <!-- matches distribution management repository url above -->
+              <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
+              <!-- remote branch name -->
+              <branch>refs/heads/mvn-repo</branch>
+              <includes>
+                <include>**/*</include>
+              </includes>
+              <!-- github repo name -->
+              <repositoryName>maven-plugins</repositoryName>
+              <!-- github username -->
+              <repositoryOwner>ci-and-cd</repositoryOwner>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>site</goal>
+                </goals>
+                <phase>deploy</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>github-maven-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-core</artifactId>
+        <version>${maven.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven.plugin-tools</groupId>
+        <artifactId>maven-plugin-annotations</artifactId>
+        <version>3.6.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>3.4.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.mylyn.github</groupId>
+        <artifactId>org.eclipse.egit.github.core</artifactId>
+        <version>5.12.0.202106070339-r</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>2.8.7</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>30.1.1-jre</version>
+      </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.easytesting</groupId>
+        <artifactId>fest-assert</artifactId>
+        <version>1.4</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <version>1.9.5</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <repositories>
+    <repository>
+      <id>egit</id>
+      <name>Eclipse egit</name>
+      <url>https://repo.eclipse.org/content/repositories/egit-releases/</url>
+    </repository>
+  </repositories>
 </project>
