@@ -424,7 +424,7 @@ public class SiteMojo extends GitHubProjectMojo {
 
             CommitUser author = new CommitUser();
             author.setName(user.getName());
-            author.setEmail(userService.getEmails().get(0));
+            author.setEmail(user.getEmail());
             author.setDate(new GregorianCalendar().getTime());
 
             commit.setAuthor(author);
