@@ -28,7 +28,6 @@ import static org.junit.Assert.assertNull;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.settings.Server;
