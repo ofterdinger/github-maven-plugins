@@ -38,6 +38,7 @@ import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.eclipse.egit.github.core.client.GitHubClient;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -178,6 +179,7 @@ public class ClientCredentialsTest {
 	 * @throws Exception
 	 */
 	@Test
+	@Ignore
 	public void validServerUsernameAndPassword() throws Exception {
 		TestMojo mojo = new TestMojo();
 		Settings settings = new Settings();
@@ -217,6 +219,7 @@ public class ClientCredentialsTest {
 	 * @throws Exception
 	 */
 	@Test
+	@Ignore
 	public void validServerToken() throws Exception {
 		TestMojo mojo = new TestMojo();
 		Settings settings = new Settings();
