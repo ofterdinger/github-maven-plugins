@@ -200,8 +200,6 @@ public class SiteMojo extends GitHubProjectMojo {
 
 	/**
 	 * Skip the site upload.
-	 *
-	 * @since 0.9
 	 */
 	@Parameter(property = "github.site.skip", defaultValue = "false")
 	private boolean skip;
