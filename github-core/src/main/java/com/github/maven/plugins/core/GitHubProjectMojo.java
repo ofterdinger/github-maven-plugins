@@ -21,17 +21,19 @@
  */
 package com.github.maven.plugins.core;
 
-import com.github.maven.plugins.core.egit.GitHubClientEgit;
-import org.apache.maven.execution.MavenSession;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.List;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
-import org.eclipse.egit.github.core.RepositoryId;
-import org.eclipse.egit.github.core.client.GitHubClient;
 import org.apache.maven.settings.crypto.DefaultSettingsDecryptionRequest;
 import org.apache.maven.settings.crypto.SettingsDecrypter;
 import org.apache.maven.settings.crypto.SettingsDecryptionResult;
@@ -42,14 +44,11 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
-
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.List;
+import org.eclipse.egit.github.core.RepositoryId;
+import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.client.IGitHubConstants;
+
+import com.github.maven.plugins.core.egit.GitHubClientEgit;
 
 /**
  * Base GitHub Mojo class to be extended.
@@ -74,8 +73,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * @return true if enabled, false otherwise
 	 */
 	protected boolean isDebug() {
-		final Log log = getLog();
-		return log != null ? log.isDebugEnabled() : false;
+		return getLog().isDebugEnabled();
 	}
 
 	/**
@@ -84,8 +82,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * @return true if enabled, false otherwise
 	 */
 	protected boolean isInfo() {
-		final Log log = getLog();
-		return log != null ? log.isInfoEnabled() : false;
+		return getLog().isInfoEnabled();
 	}
 
 	/**
@@ -94,9 +91,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * @param message
 	 */
 	protected void debug(String message) {
-		final Log log = getLog();
-		if (log != null)
-			log.debug(message);
+		getLog().debug(message);
 	}
 
 	/**
@@ -106,9 +101,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * @param throwable
 	 */
 	protected void debug(String message, Throwable throwable) {
-		final Log log = getLog();
-		if (log != null)
-			log.debug(message, throwable);
+		getLog().debug(message, throwable);
 	}
 
 	/**
@@ -117,9 +110,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * @param message
 	 */
 	protected void info(String message) {
-		final Log log = getLog();
-		if (log != null)
-			log.info(message);
+		getLog().info(message);
 	}
 
 	/**
@@ -129,9 +120,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * @param throwable
 	 */
 	protected void info(String message, Throwable throwable) {
-		final Log log = getLog();
-		if (log != null)
-			log.info(message, throwable);
+		getLog().info(message, throwable);
 	}
 
 	/**
@@ -143,64 +132,51 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * @param oauth2Token
 	 * @param serverId
 	 * @param settings
-	 * @param session
 	 * @return client
 	 * @throws MojoExecutionException
 	 */
-	protected GitHubClient createClient(String host, String userName,
-			String password, String oauth2Token, String serverId,
-			Settings settings, MavenSession session)
-			throws MojoExecutionException {
+	protected GitHubClient createClient(String host, String userName, String password, String oauth2Token,
+			String serverId, Settings settings) throws MojoExecutionException {
 		GitHubClient client;
 		if (!StringUtils.isEmpty(host)) {
 			if (isDebug())
 				debug("Using custom host: " + host);
 			client = createClient(host);
-		} else
+		} else {
 			client = createClient();
+		}
 
-		{
-			Proxy proxy = getProxy( settings, serverId, host );
-			if ( null != proxy )
-			{
-				try
-				{
-					SettingsDecrypter settingsDecrypter = container.lookup( SettingsDecrypter.class );
-					SettingsDecryptionResult result =
-						settingsDecrypter.decrypt( new DefaultSettingsDecryptionRequest( proxy ) );
-					proxy = result.getProxy();
-				}
-				catch ( ComponentLookupException cle )
-				{
-					throw new MojoExecutionException( "Unable to lookup SettingsDecrypter: " + cle.getMessage(), cle );
-				}
-			}
-
-			if ( null != proxy ){
-				java.net.Proxy javaProxy = new java.net.Proxy(java.net.Proxy.Type.HTTP, new InetSocketAddress( proxy.getHost(), proxy.getPort()));
-				if (isDebug())
-					debug(MessageFormat.format("Found Proxy {0}:{1}",
-							proxy.getHost(), proxy.getPort()));
-
-				if ( client instanceof GitHubClientEgit )
-				{
-					GitHubClientEgit clientEgit = (GitHubClientEgit)client;
-					if (isDebug())
-						debug(MessageFormat.format("Use Proxy for Egit {0}",
-								javaProxy));
-					clientEgit.setProxy( javaProxy );
-				}
+		Proxy proxy = getProxy(settings, serverId, host);
+		if (null != proxy) {
+			try {
+				SettingsDecrypter settingsDecrypter = container.lookup(SettingsDecrypter.class);
+				SettingsDecryptionResult result = settingsDecrypter
+						.decrypt(new DefaultSettingsDecryptionRequest(proxy));
+				proxy = result.getProxy();
+			} catch (ComponentLookupException cle) {
+				throw new MojoExecutionException("Unable to lookup SettingsDecrypter: " + cle.getMessage(), cle);
 			}
 		}
 
-		if (configureUsernamePassword(client, userName, password)
-				|| configureOAuth2Token(client, oauth2Token)
-				|| configureServerCredentials(client, serverId, settings,
-						session))
+		if (null != proxy) {
+			java.net.Proxy javaProxy = new java.net.Proxy(java.net.Proxy.Type.HTTP,
+					new InetSocketAddress(proxy.getHost(), proxy.getPort()));
+			if (isDebug())
+				debug(MessageFormat.format("Found Proxy {0}:{1}", proxy.getHost(), proxy.getPort()));
+
+			if (client instanceof GitHubClientEgit) {
+				GitHubClientEgit clientEgit = (GitHubClientEgit) client;
+				if (isDebug())
+					debug(MessageFormat.format("Use Proxy for Egit {0}", javaProxy));
+				clientEgit.setProxy(javaProxy);
+			}
+		}
+
+		if (configureUsernamePassword(client, userName, password) || configureOAuth2Token(client, oauth2Token)
+				|| configureServerCredentials(client, serverId, settings))
 			return client;
 		else
-			throw new MojoExecutionException(
-					"No authentication credentials configured");
+			throw new MojoExecutionException("No authentication credentials configured");
 	}
 
 	/**
@@ -212,17 +188,14 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * @return non-null client
 	 * @throws MojoExecutionException
 	 */
-	protected GitHubClient createClient(String hostname)
-			throws MojoExecutionException {
+	protected GitHubClient createClient(String hostname) throws MojoExecutionException {
 		if (!hostname.contains("://"))
 			return new RateLimitedGitHubClient(hostname);
 		try {
 			URL hostUrl = new URL(hostname);
-			return new RateLimitedGitHubClient(hostUrl.getHost(), hostUrl.getPort(),
-					hostUrl.getProtocol());
+			return new RateLimitedGitHubClient(hostUrl.getHost(), hostUrl.getPort(), hostUrl.getProtocol());
 		} catch (MalformedURLException e) {
-			throw new MojoExecutionException("Could not parse host URL "
-					+ hostname, e);
+			throw new MojoExecutionException("Could not parse host URL " + hostname, e);
 		}
 	}
 
@@ -245,8 +218,8 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * @param password
 	 * @return true if configured, false otherwise
 	 */
-	protected boolean configureUsernamePassword(final GitHubClient client,
-			final String userName, final String password) {
+	protected boolean configureUsernamePassword(final GitHubClient client, final String userName,
+			final String password) {
 		if (StringUtils.isEmpty(userName, password))
 			return false;
 
@@ -263,8 +236,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * @param oauth2Token
 	 * @return true if configured, false otherwise
 	 */
-	protected boolean configureOAuth2Token(final GitHubClient client,
-			final String oauth2Token) {
+	protected boolean configureOAuth2Token(final GitHubClient client, final String oauth2Token) {
 		if (StringUtils.isEmpty(oauth2Token))
 			return false;
 
@@ -280,68 +252,39 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * @param client
 	 * @param serverId
 	 * @param settings
-	 * @param session
 	 * @return true if configured, false otherwise
 	 * @throws MojoExecutionException
 	 */
-	protected boolean configureServerCredentials(final GitHubClient client,
-			final String serverId, final Settings settings,
-			final MavenSession session) throws MojoExecutionException {
+	protected boolean configureServerCredentials(final GitHubClient client, final String serverId,
+			final Settings settings) throws MojoExecutionException {
 		if (StringUtils.isEmpty(serverId))
 			return false;
 
 		String serverUsername = null;
 		String serverPassword = null;
 
-        // Maven 3.1.0 - It's now impossible to retrieve the username and password from the remote repository.
+		Server server = getServer(settings, serverId);
+		if (server == null)
+			throw new MojoExecutionException(MessageFormat.format("Server ''{0}'' not found in settings", serverId));
 
-//		if (session != null) {
-//			RepositorySystemSession systemSession = session
-//					.getRepositorySession();
-//			if (systemSession != null) {
-//                RemoteRepository.Builder builder = new RemoteRepository.Builder(serverId, "", "");
-//                Authentication authInfo = systemSession.getAuthenticationSelector().getAuthentication
-//                        (builder.build());
-//				if (authInfo != null) {
-//					serverUsername = authInfo.getUsername();
-//					serverPassword = authInfo.getPassword();
-//				}
-//			}
-//		}
+		if (isDebug())
+			debug(MessageFormat.format("Using ''{0}'' server credentials", serverId));
 
-        // Always true.
-//		if (StringUtils.isEmpty(serverPassword)) {
-			Server server = getServer(settings, serverId);
-			if (server == null)
-				throw new MojoExecutionException(MessageFormat.format(
-						"Server ''{0}'' not found in settings", serverId));
+		try {
+			SettingsDecrypter settingsDecrypter = container.lookup(SettingsDecrypter.class);
+			SettingsDecryptionResult result = settingsDecrypter
+					.decrypt(new DefaultSettingsDecryptionRequest(server));
+			server = result.getServer();
+		} catch (ComponentLookupException cle) {
+			throw new MojoExecutionException("Unable to lookup SettingsDecrypter: " + cle.getMessage(), cle);
+		}
 
-			if (isDebug())
-				debug(MessageFormat.format("Using ''{0}'' server credentials",
-						serverId));
-
-			{
-				try
-				{
-					SettingsDecrypter settingsDecrypter = container.lookup( SettingsDecrypter.class );
-					SettingsDecryptionResult result =
-						settingsDecrypter.decrypt( new DefaultSettingsDecryptionRequest( server ) );
-					server = result.getServer();
-				}
-				catch ( ComponentLookupException cle )
-				{
-					throw new MojoExecutionException( "Unable to lookup SettingsDecrypter: " + cle.getMessage(), cle );
-				}
-			}
-
-			serverUsername = server.getUsername();
-			serverPassword = server.getPassword();
-//		}
+		serverUsername = server.getUsername();
+		serverPassword = server.getPassword();
 
 		if (!StringUtils.isEmpty(serverUsername, serverPassword)) {
 			if (isDebug())
-				debug("Using basic authentication with username: "
-						+ serverUsername);
+				debug("Using basic authentication with username: " + serverUsername);
 			client.setCredentials(serverUsername, serverPassword);
 			return true;
 		}
@@ -355,9 +298,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 		}
 
 		if (isDebug())
-			debug(MessageFormat.format(
-					"Server ''{0}'' is missing username/password credentials",
-					serverId));
+			debug(MessageFormat.format("Server ''{0}'' is missing username/password credentials", serverId));
 		return false;
 	}
 
@@ -370,17 +311,13 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * @return non-null repository id
 	 * @throws MojoExecutionException
 	 */
-	protected RepositoryId getRepository(final MavenProject project,
-			final String owner, final String name)
+	protected RepositoryId getRepository(final MavenProject project, final String owner, final String name)
 			throws MojoExecutionException {
-		RepositoryId repository = RepositoryUtils.getRepository(project, owner,
-				name);
+		RepositoryId repository = RepositoryUtils.getRepository(project, owner, name);
 		if (repository == null)
-			throw new MojoExecutionException(
-					"No GitHub repository (owner and name) configured");
+			throw new MojoExecutionException("No GitHub repository (owner and name) configured");
 		if (isDebug())
-			debug(MessageFormat.format("Using GitHub repository {0}",
-					repository.generateId()));
+			debug(MessageFormat.format("Using GitHub repository {0}", repository.generateId()));
 		return repository;
 	}
 
@@ -388,8 +325,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * Get server with given id
 	 *
 	 * @param settings
-	 * @param serverId
-	 *            must be non-null and non-empty
+	 * @param serverId must be non-null and non-empty
 	 * @return server or null if none matching
 	 */
 	protected Server getServer(final Settings settings, final String serverId) {
@@ -408,54 +344,43 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	/**
 	 * Check hostname that matched nonProxy setting
 	 *
-	 * @param proxy Maven Proxy. Must not null
+	 * @param proxy    Maven Proxy. Must not null
 	 * @param hostname
 	 * @return matching result. true: match nonProxy
 	 */
-	protected boolean matchNonProxy( final Proxy proxy, final String hostname )
-	{
+	protected boolean matchNonProxy(final Proxy proxy, final String hostname) {
 		String host = hostname;
 
-		if ( null == hostname )
+		if (null == hostname)
 			host = IGitHubConstants.HOST_DEFAULT; // IGitHubConstants.HOST_API;
 
 		// code from org.apache.maven.plugins.site.AbstractDeployMojo#getProxyInfo
 		final String nonProxyHosts = proxy.getNonProxyHosts();
-		if ( null != nonProxyHosts )
-		{
-			final String[] nonProxies = nonProxyHosts.split( "(,)|(;)|(\\|)" );
-			if ( null != nonProxies )
-			{
-				for ( final String nonProxyHost : nonProxies )
-				{
-					//if ( StringUtils.contains( nonProxyHost, "*" ) )
-					if ( null != nonProxyHost && nonProxyHost.contains( "*" ) )
-					{
+		if (null != nonProxyHosts) {
+			final String[] nonProxies = nonProxyHosts.split("(,)|(;)|(\\|)");
+			if (null != nonProxies) {
+				for (final String nonProxyHost : nonProxies) {
+					if (null != nonProxyHost && nonProxyHost.contains("*")) {
 						// Handle wildcard at the end, beginning or middle of the nonProxyHost
-						final int pos = nonProxyHost.indexOf( '*' );
-						String nonProxyHostPrefix = nonProxyHost.substring( 0, pos );
-						String nonProxyHostSuffix = nonProxyHost.substring( pos + 1 );
+						final int pos = nonProxyHost.indexOf('*');
+						String nonProxyHostPrefix = nonProxyHost.substring(0, pos);
+						String nonProxyHostSuffix = nonProxyHost.substring(pos + 1);
 						// prefix*
-						if ( !StringUtils.isEmpty( nonProxyHostPrefix ) && host.startsWith( nonProxyHostPrefix )
-							&& StringUtils.isEmpty( nonProxyHostSuffix ) )
-						{
+						if (!StringUtils.isEmpty(nonProxyHostPrefix) && host.startsWith(nonProxyHostPrefix)
+								&& StringUtils.isEmpty(nonProxyHostSuffix)) {
 							return true;
 						}
 						// *suffix
-						if ( StringUtils.isEmpty( nonProxyHostPrefix ) && !StringUtils.isEmpty( nonProxyHostSuffix )
-							&& host.endsWith( nonProxyHostSuffix ) )
-						{
+						if (StringUtils.isEmpty(nonProxyHostPrefix) && !StringUtils.isEmpty(nonProxyHostSuffix)
+								&& host.endsWith(nonProxyHostSuffix)) {
 							return true;
 						}
 						// prefix*suffix
-						if ( !StringUtils.isEmpty( nonProxyHostPrefix ) && host.startsWith( nonProxyHostPrefix )
-							&& !StringUtils.isEmpty( nonProxyHostSuffix ) && host.endsWith( nonProxyHostSuffix ) )
-						{
+						if (!StringUtils.isEmpty(nonProxyHostPrefix) && host.startsWith(nonProxyHostPrefix)
+								&& !StringUtils.isEmpty(nonProxyHostSuffix) && host.endsWith(nonProxyHostSuffix)) {
 							return true;
 						}
-					}
-					else if ( host.equals( nonProxyHost ) )
-					{
+					} else if (host.equals(nonProxyHost)) {
 						return true;
 					}
 				}
@@ -469,10 +394,8 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * Get proxy from settings
 	 *
 	 * @param settings
-	 * @param serverId
-	 *            must be non-null and non-empty
-	 * @param host
-	 *            hostname
+	 * @param serverId must be non-null and non-empty
+	 * @param host     hostname
 	 * @return proxy or null if none matching
 	 */
 	protected Proxy getProxy(final Settings settings, final String serverId, final String host) {
@@ -483,18 +406,16 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 			return null;
 
 		// search id match first
-		if ( serverId != null && !serverId.isEmpty() ) {
+		if (serverId != null && !serverId.isEmpty()) {
 			for (Proxy proxy : proxies) {
-				if ( proxy.isActive() ) {
+				if (proxy.isActive()) {
 					final String proxyId = proxy.getId();
-					if ( proxyId != null && !proxyId.isEmpty() ) {
-						if ( proxyId.equalsIgnoreCase(serverId) ) {
-							if ( ( "http".equalsIgnoreCase( proxy.getProtocol() ) || "https".equalsIgnoreCase( proxy.getProtocol() ) ) ) {
-								if ( matchNonProxy( proxy, host ) )
-									return null;
-								else
-									return proxy;
-							}
+					if (proxyId != null && !proxyId.isEmpty() && proxyId.equalsIgnoreCase(serverId) && ("http".equalsIgnoreCase(proxy.getProtocol())
+							|| "https".equalsIgnoreCase(proxy.getProtocol()))) {
+						if (matchNonProxy(proxy, host)) {
+							return null;
+						} else {
+							return proxy;
 						}
 					}
 				}
@@ -503,11 +424,9 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 
 		// search active proxy
 		for (Proxy proxy : proxies)
-			if ( proxy.isActive() &&
-					( "http".equalsIgnoreCase( proxy.getProtocol() ) || "https".equalsIgnoreCase( proxy.getProtocol() ) )
-					)
-			{
-				if ( matchNonProxy( proxy, host ) )
+			if (proxy.isActive() && ("http".equalsIgnoreCase(proxy.getProtocol())
+					|| "https".equalsIgnoreCase(proxy.getProtocol()))) {
+				if (matchNonProxy(proxy, host))
 					return null;
 				else
 					return proxy;
@@ -517,15 +436,13 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	}
 
 	@Requirement
-    private PlexusContainer container;
+	private PlexusContainer container;
 
-    /**
-     * {@inheritDoc}
-     */
-    public void contextualize( Context context )
-        throws ContextException
-    {
-        container = (PlexusContainer) context.get( PlexusConstants.PLEXUS_KEY );
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public void contextualize(Context context) throws ContextException {
+		container = (PlexusContainer) context.get(PlexusConstants.PLEXUS_KEY);
+	}
 
 }

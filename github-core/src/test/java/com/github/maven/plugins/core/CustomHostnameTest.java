@@ -61,7 +61,7 @@ public class CustomHostnameTest {
 				Settings settings, MavenSession session)
 				throws MojoExecutionException {
 			return super.createClient(host, userName, password, oauth2Token,
-					serverId, settings, session);
+					serverId, settings);
 		}
 
 		public void execute() throws MojoExecutionException,

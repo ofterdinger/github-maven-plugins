@@ -21,12 +21,12 @@
  */
 package com.github.maven.plugins.core;
 
-import java.io.File;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
+import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.maven.execution.MavenSession;
@@ -70,7 +70,7 @@ public class MatchNonProxyTest {
 				Settings settings, MavenSession session)
 				throws MojoExecutionException {
 			return super.createClient(host, userName, password, oauth2Token,
-					serverId, settings, session);
+					serverId, settings);
 		}
 
 		public void execute() throws MojoExecutionException,

@@ -31,6 +31,10 @@ import java.util.List;
  */
 public class StringUtils {
 
+	private StringUtils() {
+		// avoid instances
+	}
+
 	/**
 	 * Are any given values null or empty?
 	 *
@@ -55,7 +59,7 @@ public class StringUtils {
 	public static String[] removeEmpties(final String... values) {
 		if (values == null || values.length == 0)
 			return new String[0];
-		List<String> validValues = new ArrayList<String>();
+		List<String> validValues = new ArrayList<>();
 		for (String value : values)
 			if (value != null && value.length() > 0)
 				validValues.add(value);

@@ -35,6 +35,10 @@ import org.eclipse.egit.github.core.RepositoryId;
  */
 public class RepositoryUtils {
 
+	private RepositoryUtils() {
+		// avoid instances
+	}
+
 	/**
 	 * Extra repository id from given SCM URL
 	 *

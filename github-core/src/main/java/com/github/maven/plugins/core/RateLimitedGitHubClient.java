@@ -26,16 +26,6 @@ public class RateLimitedGitHubClient extends GitHubClientEgit {
     }
 
     @Override
-    protected HttpURLConnection createDelete(String uri) throws IOException {
-        return super.createDelete(uri);
-    }
-
-    @Override
-    protected HttpURLConnection createGet(String uri) throws IOException {
-        return super.createGet(uri);
-    }
-
-    @Override
     protected HttpURLConnection createPost(String uri) throws IOException {
         rateLimiter().acquire();
         return super.createPost(uri);
