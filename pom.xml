@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>de.ofterdinger.parent</groupId>
+    <groupId>de.ofterdinger.parents</groupId>
     <artifactId>parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
@@ -58,8 +58,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <last.released.version>0.12</last.released.version>
-    <maven.version>3.6.3</maven.version>
+    <maven.version>3.8.1</maven.version>
   </properties>
 
   <build>
@@ -177,78 +176,6 @@
             git branch -d <branch_name>
         ]]>
         -->
-    <profile>
-      <id>deploy-artifact</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <github.global.server>github</github.global.server>
-        <github.global.oauth2Token>${env.GITHUB_GIT_SERVICE_TOKEN}</github.global.oauth2Token>
-      </properties>
-      <distributionManagement>
-        <repository>
-          <id>internal.repo</id>
-          <name>Temporary Staging Repository</name>
-          <url>file://${project.build.directory}/mvn-repo</url>
-        </repository>
-      </distributionManagement>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-release-plugin</artifactId>
-            <dependencies>
-              <dependency>
-                <groupId>org.apache.maven.scm</groupId>
-                <artifactId>maven-scm-provider-gitexe</artifactId>
-                <version>1.11.3</version>
-              </dependency>
-            </dependencies>
-            <configuration>
-              <useReleaseProfile>false</useReleaseProfile>
-              <arguments>${arguments}</arguments>
-            </configuration>
-          </plugin>
-          <plugin>
-            <artifactId>maven-deploy-plugin</artifactId>
-            <configuration>
-              <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>com.github.github</groupId>
-            <artifactId>site-maven-plugin</artifactId>
-            <version>${last.released.version}</version>
-            <configuration>
-              <!-- git commit message -->
-              <message>Maven artifacts for ${project.artifactId}-${project.version}</message>
-              <!-- disable webpage processing -->
-              <noJekyll>true</noJekyll>
-              <merge>true</merge>
-              <!-- matches distribution management repository url above -->
-              <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
-              <!-- remote branch name -->
-              <branch>refs/heads/mvn-repo</branch>
-              <includes>
-                <include>**/*</include>
-              </includes>
-              <!-- github repo name -->
-              <repositoryName>maven-plugins</repositoryName>
-              <!-- github username -->
-              <repositoryOwner>ci-and-cd</repositoryOwner>
-            </configuration>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>site</goal>
-                </goals>
-                <phase>deploy</phase>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
   </profiles>
 
   <dependencyManagement>
