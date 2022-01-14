@@ -5,9 +5,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>de.ofterdinger</groupId>
+    <groupId>de.ofterdinger.parent</groupId>
     <artifactId>parent</artifactId>
-    <version>0.0.13-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
   </parent>
 
   <groupId>com.github.github</groupId>
