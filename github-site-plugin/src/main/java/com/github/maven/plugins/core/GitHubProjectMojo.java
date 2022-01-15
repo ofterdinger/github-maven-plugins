@@ -369,7 +369,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 		if (null != nonProxyHosts) {
 			String[] nonProxies = nonProxyHosts.split("(,)|(;)|(\\|)");
 			if (null != nonProxies) {
-				for (final String nonProxyHost : nonProxies) {
+				for (String nonProxyHost : nonProxies) {
 					if (null != nonProxyHost && nonProxyHost.contains("*")) {
 						// Handle wildcard at the end, beginning or middle of the nonProxyHost
 						int pos = nonProxyHost.indexOf('*');
@@ -421,7 +421,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 		if (serverId != null && !serverId.isEmpty()) {
 			for (Proxy proxy : proxies) {
 				if (proxy.isActive()) {
-					final String proxyId = proxy.getId();
+					String proxyId = proxy.getId();
 					if (proxyId != null && !proxyId.isEmpty() && proxyId.equalsIgnoreCase(serverId)
 							&& ("http".equalsIgnoreCase(proxy.getProtocol())
 									|| "https".equalsIgnoreCase(proxy.getProtocol()))) {

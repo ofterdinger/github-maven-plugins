@@ -43,7 +43,7 @@ public class PathUtils {
 	 * @return non-null but possibly empty array of string paths relative to the base directory
 	 */
 	public static String[] getMatchingPaths(String[] includes, String[] excludes, String baseDir) {
-		final DirectoryScanner scanner = new DirectoryScanner();
+		DirectoryScanner scanner = new DirectoryScanner();
 		scanner.setBasedir(baseDir);
 		if (includes != null && includes.length > 0) {
 			scanner.setIncludes(includes);
