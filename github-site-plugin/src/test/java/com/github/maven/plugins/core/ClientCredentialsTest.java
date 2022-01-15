@@ -154,7 +154,7 @@ public class ClientCredentialsTest {
 		assertNotNull(client);
 		assertNull(mojo.user.get());
 		assertNull(mojo.password.get());
-		assertEquals(mojo.token.get(), "token");
+		assertEquals("token", mojo.token.get());
 	}
 
 	/**
@@ -170,7 +170,7 @@ public class ClientCredentialsTest {
 		assertNotNull(client);
 		assertNull(mojo.user.get());
 		assertNull(mojo.password.get());
-		assertEquals(mojo.token.get(), "token");
+		assertEquals("token", mojo.token.get());
 	}
 
 	/**

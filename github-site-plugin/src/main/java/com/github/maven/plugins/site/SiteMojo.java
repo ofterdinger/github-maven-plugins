@@ -216,15 +216,16 @@ public class SiteMojo extends GitHubProjectMojo {
 	protected String createBlob(DataService service, RepositoryId repository, String path)
 			throws MojoExecutionException {
 		File file = new File(outputDirectory, path);
-		final long length = file.length();
-		final int size = length > MAX_VALUE ? MAX_VALUE : (int) length;
+		long length = file.length();
+		int size = length > MAX_VALUE ? MAX_VALUE : (int) length;
 		ByteArrayOutputStream output = new ByteArrayOutputStream(size);
 
 		try (FileInputStream stream = new FileInputStream(file);) {
-			final byte[] buffer = new byte[8192];
+			byte[] buffer = new byte[8192];
 			int read;
-			while ((read = stream.read(buffer)) != -1)
+			while ((read = stream.read(buffer)) != -1) {
 				output.write(buffer, 0, read);
+			}
 		} catch (IOException e) {
 			throw new MojoExecutionException("Error reading file: " + getExceptionMessage(e), e);
 		}

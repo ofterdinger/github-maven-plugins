@@ -34,6 +34,8 @@ import org.eclipse.egit.github.core.client.GitHubClient;
  */
 public class GitHubClientEgit extends GitHubClient {
 
+	private Proxy proxy;
+
 	public GitHubClientEgit() {
 		super();
 	}
@@ -46,8 +48,6 @@ public class GitHubClientEgit extends GitHubClient {
 		super(hostname, port, scheme);
 	}
 
-	private Proxy proxy;
-
 	@Override
 	public GitHubClient setProxy(Proxy proxy) {
 		this.proxy = proxy;
@@ -57,10 +57,10 @@ public class GitHubClientEgit extends GitHubClient {
 	@Override
 	protected HttpURLConnection createConnection(String uri) throws IOException {
 		URL url = new URL(createUri(uri));
-		if ( null == proxy ) 		{
+		if (null == this.proxy) {
 			return (HttpURLConnection) url.openConnection();
 		} else {
-			return (HttpURLConnection) url.openConnection( proxy );
+			return (HttpURLConnection) url.openConnection(this.proxy);
 		}
 	}
 

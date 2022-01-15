@@ -46,15 +46,17 @@ public class RepositoryUtils {
 	 * @return repository id or null if extraction fails
 	 */
 	public static RepositoryId extractRepositoryFromScmUrl(String url) {
-		if (StringUtils.isEmpty(url))
+		if (StringUtils.isEmpty(url)) {
 			return null;
+		}
 		int ghIndex = url.indexOf(HOST_DEFAULT);
-		if (ghIndex == -1 || ghIndex + 1 >= url.length())
+		if (ghIndex == -1 || ghIndex + 1 >= url.length()) {
 			return null;
-		if (!url.endsWith(SUFFIX_GIT))
+		}
+		if (!url.endsWith(SUFFIX_GIT)) {
 			return null;
-		url = url.substring(ghIndex + HOST_DEFAULT.length() + 1, url.length()
-				- SUFFIX_GIT.length());
+		}
+		url = url.substring(ghIndex + HOST_DEFAULT.length() + 1, url.length() - SUFFIX_GIT.length());
 		return RepositoryId.createFromId(url);
 	}
 
@@ -67,18 +69,18 @@ public class RepositoryUtils {
 	 *
 	 * @return repository id or null if none configured
 	 */
-	public static RepositoryId getRepository(final MavenProject project,
-			final String owner, final String name) {
+	public static RepositoryId getRepository(MavenProject project, String owner, String name) {
 		// Use owner and name if specified
-		if (!StringUtils.isEmpty(owner, name))
+		if (!StringUtils.isEmpty(owner, name)) {
 			return RepositoryId.create(owner, name);
-
-		if (project == null)
+		}
+		if (project == null) {
 			return null;
-
+		}
 		RepositoryId repo = null;
+
 		// Extract repository from SCM URLs first if present
-		final Scm scm = project.getScm();
+		Scm scm = project.getScm();
 		if (scm != null) {
 			repo = RepositoryId.createFromUrl(scm.getUrl());
 			if (repo == null)
@@ -88,9 +90,9 @@ public class RepositoryUtils {
 		}
 
 		// Check project URL last
-		if (repo == null)
+		if (repo == null) {
 			repo = RepositoryId.createFromUrl(project.getUrl());
-
+		}
 		return repo;
 	}
 }

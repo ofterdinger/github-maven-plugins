@@ -40,17 +40,17 @@ public class PathUtils {
 	 * @param includes
 	 * @param excludes
 	 * @param baseDir
-	 * @return non-null but possibly empty array of string paths relative to the
-	 *         base directory
+	 * @return non-null but possibly empty array of string paths relative to the base directory
 	 */
-	public static String[] getMatchingPaths(final String[] includes,
-			final String[] excludes, final String baseDir) {
+	public static String[] getMatchingPaths(String[] includes, String[] excludes, String baseDir) {
 		final DirectoryScanner scanner = new DirectoryScanner();
 		scanner.setBasedir(baseDir);
-		if (includes != null && includes.length > 0)
+		if (includes != null && includes.length > 0) {
 			scanner.setIncludes(includes);
-		if (excludes != null && excludes.length > 0)
+		}
+		if (excludes != null && excludes.length > 0) {
 			scanner.setExcludes(excludes);
+		}
 		scanner.scan();
 		return scanner.getIncludedFiles();
 	}

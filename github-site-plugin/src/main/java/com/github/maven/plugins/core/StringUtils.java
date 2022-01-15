@@ -41,12 +41,14 @@ public class StringUtils {
 	 * @param values
 	 * @return true if any null or empty, false otherwise
 	 */
-	public static boolean isEmpty(final String... values) {
-		if (values == null || values.length == 0)
+	public static boolean isEmpty(String... values) {
+		if (values == null || values.length == 0) {
 			return true;
-		for (String value : values)
+		}
+		for (String value : values) {
 			if (value == null || value.length() == 0)
 				return true;
+		}
 		return false;
 	}
 
@@ -56,13 +58,15 @@ public class StringUtils {
 	 * @param values
 	 * @return non-null but possibly empty array of non-null/non-empty strings
 	 */
-	public static String[] removeEmpties(final String... values) {
-		if (values == null || values.length == 0)
+	public static String[] removeEmpties(String... values) {
+		if (values == null || values.length == 0) {
 			return new String[0];
+		}
 		List<String> validValues = new ArrayList<>();
-		for (String value : values)
+		for (String value : values) {
 			if (value != null && value.length() > 0)
 				validValues.add(value);
+		}
 		return validValues.toArray(new String[validValues.size()]);
 	}
 
