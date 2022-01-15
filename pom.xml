@@ -226,5 +226,15 @@
       <name>Eclipse egit</name>
       <url>https://repo.eclipse.org/content/repositories/egit-releases/</url>
     </repository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
   </repositories>
 </project>
