@@ -21,7 +21,6 @@
  */
 package com.github.maven.plugins.core;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -58,14 +57,14 @@ import com.google.common.annotations.VisibleForTesting;
  */
 public abstract class GitHubProjectMojo extends AbstractMojo implements Contextualizable {
 
+	@Requirement
+	private PlexusContainer container;
+
 	/**
-	 * Get formatted exception message for {@link IOException}
-	 *
-	 * @param e
-	 * @return message
+	 * {@inheritDoc}
 	 */
-	public static String getExceptionMessage(IOException e) {
-		return e.getMessage();
+	public void contextualize(Context context) throws ContextException {
+		this.container = (PlexusContainer) context.get(PlexusConstants.PLEXUS_KEY);
 	}
 
 	/**
@@ -191,7 +190,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * @return non-null client
 	 * @throws MojoExecutionException
 	 */
-	protected GitHubClient createClient(String hostname) throws MojoExecutionException {
+	GitHubClient createClient(String hostname) throws MojoExecutionException {
 		if (!hostname.contains("://"))
 			return new RateLimitedGitHubClient(hostname);
 		try {
@@ -209,7 +208,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 *
 	 * @return non-null client
 	 */
-	protected GitHubClient createClient() {
+	GitHubClient createClient() {
 		return new RateLimitedGitHubClient();
 	}
 
@@ -436,7 +435,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 		}
 
 		// search active proxy
-		for (Proxy proxy : proxies)
+		for (Proxy proxy : proxies) {
 			if (proxy.isActive() && ("http".equalsIgnoreCase(proxy.getProtocol())
 					|| "https".equalsIgnoreCase(proxy.getProtocol()))) {
 				if (matchNonProxy(proxy, host))
@@ -444,17 +443,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 				else
 					return proxy;
 			}
-
+		}
 		return null;
-	}
-
-	@Requirement
-	private PlexusContainer container;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void contextualize(Context context) throws ContextException {
-		container = (PlexusContainer) context.get(PlexusConstants.PLEXUS_KEY);
 	}
 }

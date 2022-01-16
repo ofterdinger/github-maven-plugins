@@ -284,8 +284,9 @@ public class SiteMojo extends GitHubProjectMojo {
 			TreeEntry entry = new TreeEntry();
 			entry.setPath(prefix + path);
 			// Only create a .nojekyll file if it doesn't already exist
-			if (createNoJekyll && NO_JEKYLL_FILE.equals(entry.getPath()))
+			if (createNoJekyll && NO_JEKYLL_FILE.equals(entry.getPath())) {
 				createNoJekyll = false;
+			}
 			entry.setType(TYPE_BLOB);
 			entry.setMode(MODE_BLOB);
 			entry.setSha(createBlob(service, repository, path));
@@ -298,15 +299,16 @@ public class SiteMojo extends GitHubProjectMojo {
 			entry.setType(TYPE_BLOB);
 			entry.setMode(MODE_BLOB);
 
-			if (isDebug())
+			if (isDebug()) {
 				debug("Creating empty .nojekyll blob at root of tree");
+			}
+
 			if (!dryRun)
 				try {
 					entry.setSha(
 							service.createBlob(repository, new Blob().setEncoding(ENCODING_BASE64).setContent("")));
 				} catch (IOException e) {
-					throw new MojoExecutionException("Error creating .nojekyll empty blob: " + getExceptionMessage(e),
-							e);
+					throw new MojoExecutionException("Error creating .nojekyll empty blob: " + e.getMessage(), e);
 				}
 			entries.add(entry);
 		}
@@ -315,16 +317,18 @@ public class SiteMojo extends GitHubProjectMojo {
 		try {
 			ref = service.getReference(repository, branch);
 		} catch (RequestException e) {
-			if (404 != e.getStatus())
-				throw new MojoExecutionException("Error getting reference: " + getExceptionMessage(e), e);
+			if (404 != e.getStatus()) {
+				throw new MojoExecutionException("Error getting reference: " + e.getMessage(), e);
+			}
 		} catch (IOException e) {
-			throw new MojoExecutionException("Error getting reference: " + getExceptionMessage(e), e);
+			throw new MojoExecutionException("Error getting reference: " + e.getMessage(), e);
 		}
 
-		if (ref != null && !TYPE_COMMIT.equals(ref.getObject().getType()))
+		if (ref != null && !TYPE_COMMIT.equals(ref.getObject().getType())) {
 			throw new MojoExecutionException(
 					MessageFormat.format("Existing ref {0} points to a {1} ({2}) instead of a commmit", ref.getRef(),
 							ref.getObject().getType(), ref.getObject().getSha()));
+		}
 
 		// Write tree
 		Tree tree;
@@ -346,7 +350,7 @@ public class SiteMojo extends GitHubProjectMojo {
 			else
 				tree = new Tree();
 		} catch (IOException e) {
-			throw new MojoExecutionException("Error creating tree: " + getExceptionMessage(e), e);
+			throw new MojoExecutionException("Error creating tree: " + e.getMessage(), e);
 		}
 
 		// Build commit
@@ -366,7 +370,7 @@ public class SiteMojo extends GitHubProjectMojo {
 			commit.setAuthor(author);
 			commit.setCommitter(author);
 		} catch (IOException e) {
-			throw new MojoExecutionException("Error retrieving user info: " + getExceptionMessage(e), e);
+			throw new MojoExecutionException("Error retrieving user info: " + e.getMessage(), e);
 		}
 
 		// Set parent commit SHA-1 if reference exists
@@ -382,7 +386,7 @@ public class SiteMojo extends GitHubProjectMojo {
 			}
 			info(MessageFormat.format("Creating commit with SHA-1: {0}", created.getSha()));
 		} catch (IOException e) {
-			throw new MojoExecutionException("Error creating commit: " + getExceptionMessage(e), e);
+			throw new MojoExecutionException("Error creating commit: " + e.getMessage(), e);
 		}
 
 		TypedResource object = new TypedResource();
@@ -397,7 +401,7 @@ public class SiteMojo extends GitHubProjectMojo {
 					service.editReference(repository, ref, force);
 				}
 			} catch (IOException e) {
-				throw new MojoExecutionException("Error editing reference: " + getExceptionMessage(e), e);
+				throw new MojoExecutionException("Error editing reference: " + e.getMessage(), e);
 			}
 		} else {
 			// Create new reference
@@ -408,7 +412,7 @@ public class SiteMojo extends GitHubProjectMojo {
 					service.createReference(repository, ref);
 				}
 			} catch (IOException e) {
-				throw new MojoExecutionException("Error creating reference: " + getExceptionMessage(e), e);
+				throw new MojoExecutionException("Error creating reference: " + e.getMessage(), e);
 			}
 		}
 	}
@@ -435,7 +439,7 @@ public class SiteMojo extends GitHubProjectMojo {
 				output.write(buffer, 0, read);
 			}
 		} catch (IOException e) {
-			throw new MojoExecutionException("Error reading file: " + getExceptionMessage(e), e);
+			throw new MojoExecutionException("Error reading file: " + e.getMessage(), e);
 		}
 
 		Blob blob = new Blob().setEncoding(ENCODING_BASE64);
@@ -452,7 +456,7 @@ public class SiteMojo extends GitHubProjectMojo {
 				return null;
 			}
 		} catch (IOException e) {
-			throw new MojoExecutionException("Error creating blob: " + getExceptionMessage(e), e);
+			throw new MojoExecutionException("Error creating blob: " + e.getMessage(), e);
 		}
 	}
 }
