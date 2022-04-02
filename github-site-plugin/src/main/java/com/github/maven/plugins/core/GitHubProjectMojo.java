@@ -328,6 +328,8 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 		return repository;
 	}
 
+	// static helpers
+
 	/**
 	 * Get server with given id
 	 *
@@ -335,7 +337,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * @param serverId must be non-null and non-empty
 	 * @return server or null if none matching
 	 */
-	private Server getServer(Settings settings, String serverId) {
+	private static Server getServer(Settings settings, String serverId) {
 		if (settings == null)
 			return null;
 		List<Server> servers = settings.getServers();
@@ -357,7 +359,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * @param hostname
 	 * @return matching result. true: match nonProxy
 	 */
-	boolean matchNonProxy(Proxy proxy, String hostname) {
+	static boolean matchNonProxy(Proxy proxy, String hostname) {
 		String host = hostname;
 
 		if (null == hostname) {
@@ -409,7 +411,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * @return proxy or null if none matching
 	 */
 	@VisibleForTesting
-	Proxy getProxy(Settings settings, String serverId, String host) {
+	static Proxy getProxy(Settings settings, String serverId, String host) {
 		if (settings == null) {
 			return null;
 		}
