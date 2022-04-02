@@ -227,7 +227,7 @@
       <url>https://repo.eclipse.org/content/repositories/egit-releases/</url>
     </repository>
     <repository>
-      <id>ossrh</id>
+      <id>oss-snapshot</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
       <releases>
         <enabled>false</enabled>
