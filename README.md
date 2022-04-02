@@ -145,9 +145,9 @@ prefix of `ghSite`.
 <build>
   <plugins>
     <plugin>
-      <groupId>com.github.github</groupId>
+      <groupId>de.ofterdinger.maven.plugins</groupId>
       <artifactId>site-maven-plugin</artifactId>
-      <version>0.12</version>
+      <version>0.1.0</version>
       <configuration>
         <message>Creating site for ${project.version}</message>
       </configuration>
