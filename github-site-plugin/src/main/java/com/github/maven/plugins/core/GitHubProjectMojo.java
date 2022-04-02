@@ -63,6 +63,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void contextualize(Context context) throws ContextException {
 		this.container = (PlexusContainer) context.get(PlexusConstants.PLEXUS_KEY);
 	}

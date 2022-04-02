@@ -203,6 +203,7 @@ public class SiteMojo extends GitHubProjectMojo {
 	@Parameter(property = "github.site.skip", defaultValue = "false")
 	private boolean skip;
 
+	@Override
 	public void execute() throws MojoExecutionException {
 		if (skip) {
 			info("Github Site Plugin execution skipped");
