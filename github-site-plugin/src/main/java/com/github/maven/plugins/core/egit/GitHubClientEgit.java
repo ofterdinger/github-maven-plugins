@@ -19,39 +19,49 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-package com.github.maven.plugins.core;
+package com.github.maven.plugins.core.egit;
 
-import org.codehaus.plexus.util.DirectoryScanner;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.Proxy;
+import java.net.URL;
+import org.eclipse.egit.github.core.client.GitHubClient;
 
 /**
- * Path utilities
+ * GitHubClient support proxy
  *
- * @author Kevin Sawicki (kevin@github.com)
+ * @author Kiyofumi Kondoh
  */
-public class PathUtils {
+public class GitHubClientEgit extends GitHubClient {
 
-	private PathUtils() {
-		// avoid instances
+	private Proxy proxy;
+
+	public GitHubClientEgit() {
+		super();
 	}
 
-	/**
-	 * Get matching paths found in given base directory
-	 *
-	 * @param includes
-	 * @param excludes
-	 * @param baseDir
-	 * @return non-null but possibly empty array of string paths relative to the
-	 *         base directory
-	 */
-	public static String[] getMatchingPaths(final String[] includes,
-			final String[] excludes, final String baseDir) {
-		final DirectoryScanner scanner = new DirectoryScanner();
-		scanner.setBasedir(baseDir);
-		if (includes != null && includes.length > 0)
-			scanner.setIncludes(includes);
-		if (excludes != null && excludes.length > 0)
-			scanner.setExcludes(excludes);
-		scanner.scan();
-		return scanner.getIncludedFiles();
+	public GitHubClientEgit(String hostname) {
+		super(hostname);
 	}
+
+	public GitHubClientEgit(String hostname, int port, String scheme) {
+		super(hostname, port, scheme);
+	}
+
+	@Override
+	public GitHubClient setProxy(Proxy proxy) {
+		this.proxy = proxy;
+		return this;
+	}
+
+	@Override
+	protected HttpURLConnection createConnection(String uri) throws IOException {
+		URL url = new URL(createUri(uri));
+		if (null == this.proxy) {
+			return (HttpURLConnection) url.openConnection();
+		} else {
+			return (HttpURLConnection) url.openConnection(this.proxy);
+		}
+	}
+
 }

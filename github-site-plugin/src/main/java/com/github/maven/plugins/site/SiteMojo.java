@@ -21,15 +21,10 @@
  */
 package com.github.maven.plugins.site;
 
-import static java.lang.Integer.MAX_VALUE;
 import static org.eclipse.egit.github.core.Blob.ENCODING_BASE64;
 import static org.eclipse.egit.github.core.TreeEntry.MODE_BLOB;
 import static org.eclipse.egit.github.core.TreeEntry.TYPE_BLOB;
 import static org.eclipse.egit.github.core.TypedResource.TYPE_COMMIT;
-
-import com.github.maven.plugins.core.GitHubProjectMojo;
-import com.github.maven.plugins.core.PathUtils;
-import com.github.maven.plugins.core.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -62,10 +57,13 @@ import org.eclipse.egit.github.core.service.DataService;
 import org.eclipse.egit.github.core.service.UserService;
 import org.eclipse.egit.github.core.util.EncodingUtils;
 
+import com.github.maven.plugins.core.GitHubProjectMojo;
+import com.github.maven.plugins.core.PathUtils;
+import com.github.maven.plugins.core.StringUtils;
+
 /**
- * Mojo which copies files to a GitHub repository branch. This directly uses the
- * GitHub data API to upload blobs, make commits, and update references and so a
- * local Git repository is not used.
+ * Mojo which copies files to a GitHub repository branch. This directly uses the GitHub data API to upload blobs, make commits, and update
+ * references and so a local Git repository is not used.
  *
  * @author Kevin Sawicki (kevin@github.com)
  */
@@ -84,7 +82,7 @@ public class SiteMojo extends GitHubProjectMojo {
 	private String branch;
 
 	/**
-	 * Path of tree
+	 * Path relative to the root of the repository that all blobs should be relative to
 	 */
 	@Parameter
 	private String path;
@@ -96,13 +94,13 @@ public class SiteMojo extends GitHubProjectMojo {
 	private String message;
 
 	/**
-	 * The name of the repository. This setting must be set if the project's url and scm metadata are not set.
+	 * The name of the repository. This setting must be set if the project's URL and scm metadata are not set.
 	 */
 	@Parameter(property = "github.site.repositoryName")
 	private String repositoryName;
 
 	/**
-	 * The owner of repository. This setting must be set if the project's url and scm metadata are not set.
+	 * The owner of repository. This setting must be set if the project's URL and scm metadata are not set.
 	 */
 	@Parameter(property = "github.site.repositoryOwner")
 	private String repositoryOwner;
@@ -132,8 +130,8 @@ public class SiteMojo extends GitHubProjectMojo {
 	private String host;
 
 	/**
-	 * The <em>id</em> of the server to use to retrieve the Github credentials. This id must identify a
-     * <em>server</em> from your <em>setting.xml</em> file.
+	 * The <em>id</em> of the server to use to retrieve the Github credentials. This id must identify a <em>server</em> from your
+	 * <em>setting.xml</em> file.
 	 */
 	@Parameter(property = "github.site.server", defaultValue = "${github.global.server}")
 	private String server;
@@ -181,109 +179,64 @@ public class SiteMojo extends GitHubProjectMojo {
 	private boolean force;
 
 	/**
-	 * Set it to {@code true} to always create a '.nojekyll' file at the root of the site if one
-	 * doesn't already exist.
+	 * Set it to {@code true} to always create a '.nojekyll' file at the root of the site if one doesn't already exist.
 	 */
 	@Parameter(property = "github.site.noJekyll")
 	private boolean noJekyll;
 
 	/**
-	 * Set it to {@code true} to merge with existing the existing tree that is referenced by the commit
-	 * that the ref currently points to
+	 * Set it to {@code true} to merge with existing the existing tree that is referenced by the commit that the ref currently points to
 	 */
 	@Parameter(property = "github.site.merge")
 	private boolean merge;
 
 	/**
-	 * Show what blob, trees, commits, and references would be created/updated
-	 * but don't actually perform any operations on the target GitHub
+	 * Show what blob, trees, commits, and references would be created/updated but don't actually perform any operations on the target GitHub
 	 * repository.
 	 */
 	@Parameter(property = "github.site.dryRun")
 	private boolean dryRun;
 
-    /**
-     * Skip the site upload.
-     * @since 0.9
-     */
-	@Parameter(property = "github.site.skip", defaultValue = "false")
-    private boolean skip;
-
 	/**
-	 * Create blob
-	 *
-	 * @param service
-	 * @param repository
-	 * @param path
-	 * @return blob SHA-1
-	 * @throws MojoExecutionException
+	 * Skip the site upload.
 	 */
-	protected String createBlob(DataService service, RepositoryId repository,
-			String path) throws MojoExecutionException {
-		File file = new File(outputDirectory, path);
-		final long length = file.length();
-		final int size = length > MAX_VALUE ? MAX_VALUE : (int) length;
-		ByteArrayOutputStream output = new ByteArrayOutputStream(size);
+	@Parameter(property = "github.site.skip", defaultValue = "false")
+	private boolean skip;
 
-		try (FileInputStream stream = new FileInputStream(file);) {
-			final byte[] buffer = new byte[8192];
-			int read;
-			while ((read = stream.read(buffer)) != -1)
-				output.write(buffer, 0, read);
-		} catch (IOException e) {
-			throw new MojoExecutionException("Error reading file: "
-					+ getExceptionMessage(e), e);
-		}
-
-		Blob blob = new Blob().setEncoding(ENCODING_BASE64);
-		String encoded = EncodingUtils.toBase64(output.toByteArray());
-		blob.setContent(encoded);
-
-		try {
-			if (isDebug())
-				debug(MessageFormat.format("Creating blob from {0}",
-						file.getAbsolutePath()));
-			if (!dryRun)
-				return service.createBlob(repository, blob);
-			else
-				return null;
-		} catch (IOException e) {
-			throw new MojoExecutionException("Error creating blob: "
-					+ getExceptionMessage(e), e);
-		}
-	}
-
+	@Override
 	public void execute() throws MojoExecutionException {
-        if (skip) {
-            info("Github Site Plugin execution skipped");
-            return;
-        }
+		if (skip) {
+			info("Github Site Plugin execution skipped");
+			return;
+		}
 
-		RepositoryId repository = getRepository(project, repositoryOwner,
-				repositoryName);
+		RepositoryId repository = getRepository(project, repositoryOwner, repositoryName);
 
-		if (dryRun)
+		if (dryRun) {
 			info("Dry run mode, repository will not be modified");
+		}
 
 		// Find files to include
 		String baseDir = outputDirectory.getAbsolutePath();
 		String[] includePaths = StringUtils.removeEmpties(includes);
 		String[] excludePaths = StringUtils.removeEmpties(excludes);
-		if (isDebug())
-			debug(MessageFormat.format(
-					"Scanning {0} and including {1} and exluding {2}", baseDir,
-					Arrays.toString(includePaths),
-					Arrays.toString(excludePaths)));
-		String[] paths = PathUtils.getMatchingPaths(includePaths, excludePaths,
-				baseDir);
 
-		if (paths.length != 1)
+		if (isDebug()) {
+			debug(MessageFormat.format("Scanning {0} and including {1} and exluding {2}", baseDir,
+					Arrays.toString(includePaths), Arrays.toString(excludePaths)));
+		}
+
+		String[] paths = PathUtils.getMatchingPaths(includePaths, excludePaths, baseDir);
+
+		if (paths.length != 1) {
 			info(MessageFormat.format("Creating {0} blobs", paths.length));
-		else
+		} else {
 			info("Creating 1 blob");
-		if (isDebug())
-			debug(MessageFormat.format("Scanned files to include: {0}",
-					Arrays.toString(paths)));
+		}
+
+		if (isDebug()) {
+			debug(MessageFormat.format("Scanned files to include: {0}", Arrays.toString(paths)));
+		}
 
 		// Push updates in multiple passes
 		final int CAPACITY = 500;
@@ -294,7 +247,7 @@ public class SiteMojo extends GitHubProjectMojo {
 			String[] subpaths = copyOfRange(paths, start, end);
 			doExecute(repository, subpaths);
 			start = end;
-			end = (end + CAPACITY < paths.length ? end + CAPACITY : paths.length );
+			end = (end + CAPACITY < paths.length ? end + CAPACITY : paths.length);
 		}
 	}
 
@@ -310,21 +263,21 @@ public class SiteMojo extends GitHubProjectMojo {
 	}
 
 	private void doExecute(RepositoryId repository, String[] paths) throws MojoExecutionException {
-		DataService service = new DataService(createClient(host, userName,
-				password, oauth2Token, server, settings));
+		DataService service = new DataService(createClient(host, userName, password, oauth2Token, server, settings));
 
 		// Write blobs and build tree entries
 		List<TreeEntry> entries = new ArrayList<>(paths.length);
-		String prefix = path;
-		if (prefix == null)
-			prefix = "";
-		if (prefix.length() > 0 && !prefix.endsWith("/"))
+		String prefix = this.path != null ? this.path : "";
+		if (prefix.length() > 0 && !prefix.endsWith("/")) {
 			prefix += "/";
+		}
 
 		// Convert separator to forward slash '/'
-		if ('\\' == File.separatorChar)
-			for (int i = 0; i < paths.length; i++)
+		if ('\\' == File.separatorChar) {
+			for (int i = 0; i < paths.length; i++) {
 				paths[i] = paths[i].replace('\\', '/');
+			}
+		}
 
 		boolean createNoJekyll = noJekyll;
 
@@ -332,8 +285,9 @@ public class SiteMojo extends GitHubProjectMojo {
 			TreeEntry entry = new TreeEntry();
 			entry.setPath(prefix + path);
 			// Only create a .nojekyll file if it doesn't already exist
-			if (createNoJekyll && NO_JEKYLL_FILE.equals(entry.getPath()))
+			if (createNoJekyll && NO_JEKYLL_FILE.equals(entry.getPath())) {
 				createNoJekyll = false;
+			}
 			entry.setType(TYPE_BLOB);
 			entry.setMode(MODE_BLOB);
 			entry.setSha(createBlob(service, repository, path));
@@ -346,16 +300,16 @@ public class SiteMojo extends GitHubProjectMojo {
 			entry.setType(TYPE_BLOB);
 			entry.setMode(MODE_BLOB);
 
-			if (isDebug())
+			if (isDebug()) {
 				debug("Creating empty .nojekyll blob at root of tree");
+			}
+
 			if (!dryRun)
 				try {
-					entry.setSha(service.createBlob(repository, new Blob()
-							.setEncoding(ENCODING_BASE64).setContent("")));
+					entry.setSha(
+							service.createBlob(repository, new Blob().setEncoding(ENCODING_BASE64).setContent("")));
 				} catch (IOException e) {
-					throw new MojoExecutionException(
-							"Error creating .nojekyll empty blob: "
-									+ getExceptionMessage(e), e);
+					throw new MojoExecutionException("Error creating .nojekyll empty blob: " + e.getMessage(), e);
 				}
 			entries.add(entry);
 		}
@@ -364,34 +318,30 @@ public class SiteMojo extends GitHubProjectMojo {
 		try {
 			ref = service.getReference(repository, branch);
 		} catch (RequestException e) {
-			if (404 != e.getStatus())
-				throw new MojoExecutionException("Error getting reference: "
-						+ getExceptionMessage(e), e);
+			if (404 != e.getStatus()) {
+				throw new MojoExecutionException("Error getting reference: " + e.getMessage(), e);
+			}
 		} catch (IOException e) {
-			throw new MojoExecutionException("Error getting reference: "
-					+ getExceptionMessage(e), e);
+			throw new MojoExecutionException("Error getting reference: " + e.getMessage(), e);
 		}
 
-		if (ref != null && !TYPE_COMMIT.equals(ref.getObject().getType()))
+		if (ref != null && !TYPE_COMMIT.equals(ref.getObject().getType())) {
 			throw new MojoExecutionException(
-					MessageFormat
-							.format("Existing ref {0} points to a {1} ({2}) instead of a commmit",
-									ref.getRef(), ref.getObject().getType(),
-									ref.getObject().getSha()));
+					MessageFormat.format("Existing ref {0} points to a {1} ({2}) instead of a commmit", ref.getRef(),
+							ref.getObject().getType(), ref.getObject().getSha()));
+		}
 
 		// Write tree
 		Tree tree;
 		try {
 			int size = entries.size();
 			if (size != 1)
-				info(MessageFormat.format(
-						"Creating tree with {0} blob entries", size));
+				info(MessageFormat.format("Creating tree with {0} blob entries", size));
 			else
 				info("Creating tree with 1 blob entry");
 			String baseTree = null;
 			if (merge && ref != null) {
-				Tree currentTree = service.getCommit(repository,
-						ref.getObject().getSha()).getTree();
+				Tree currentTree = service.getCommit(repository, ref.getObject().getSha()).getTree();
 				if (currentTree != null)
 					baseTree = currentTree.getSha();
 				info(MessageFormat.format("Merging with tree {0}", baseTree));
@@ -401,8 +351,7 @@ public class SiteMojo extends GitHubProjectMojo {
 			else
 				tree = new Tree();
 		} catch (IOException e) {
-			throw new MojoExecutionException("Error creating tree: "
-					+ getExceptionMessage(e), e);
+			throw new MojoExecutionException("Error creating tree: " + e.getMessage(), e);
 		}
 
 		// Build commit
@@ -410,38 +359,35 @@ public class SiteMojo extends GitHubProjectMojo {
 		commit.setMessage(message);
 		commit.setTree(tree);
 
-        try {
-            UserService userService = new UserService(service.getClient());
-            User user = userService.getUser();
+		try {
+			UserService userService = new UserService(service.getClient());
+			User user = userService.getUser();
 
-            CommitUser author = new CommitUser();
-            author.setName(user.getName());
-            author.setEmail(user.getEmail());
-            author.setDate(new GregorianCalendar().getTime());
+			CommitUser author = new CommitUser();
+			author.setName(user.getName());
+			author.setEmail(user.getEmail());
+			author.setDate(new GregorianCalendar().getTime());
 
-            commit.setAuthor(author);
-            commit.setCommitter(author);
-        } catch (IOException e) {
-            throw new MojoExecutionException("Error retrieving user info: "
-                    + getExceptionMessage(e), e);
-        }
+			commit.setAuthor(author);
+			commit.setCommitter(author);
+		} catch (IOException e) {
+			throw new MojoExecutionException("Error retrieving user info: " + e.getMessage(), e);
+		}
 
 		// Set parent commit SHA-1 if reference exists
 		if (ref != null)
-			commit.setParents(Collections.singletonList(new Commit().setSha(ref
-					.getObject().getSha())));
+			commit.setParents(Collections.singletonList(new Commit().setSha(ref.getObject().getSha())));
 
 		Commit created;
 		try {
-			if (!dryRun)
+			if (!dryRun) {
 				created = service.createCommit(repository, commit);
-			else
+			} else {
 				created = new Commit();
-			info(MessageFormat.format("Creating commit with SHA-1: {0}",
-					created.getSha()));
+			}
+			info(MessageFormat.format("Creating commit with SHA-1: {0}", created.getSha()));
 		} catch (IOException e) {
-			throw new MojoExecutionException("Error creating commit: "
-					+ getExceptionMessage(e), e);
+			throw new MojoExecutionException("Error creating commit: " + e.getMessage(), e);
 		}
 
 		TypedResource object = new TypedResource();
@@ -450,28 +396,68 @@ public class SiteMojo extends GitHubProjectMojo {
 			// Update existing reference
 			ref.setObject(object);
 			try {
-				info(MessageFormat.format(
-						"Updating reference {0} from {1} to {2}", branch,
+				info(MessageFormat.format("Updating reference {0} from {1} to {2}", branch,
 						commit.getParents().get(0).getSha(), created.getSha()));
-				if (!dryRun)
+				if (!dryRun) {
 					service.editReference(repository, ref, force);
+				}
 			} catch (IOException e) {
-				throw new MojoExecutionException("Error editing reference: "
-						+ getExceptionMessage(e), e);
+				throw new MojoExecutionException("Error editing reference: " + e.getMessage(), e);
 			}
 		} else {
 			// Create new reference
 			ref = new Reference().setObject(object).setRef(branch);
 			try {
-				info(MessageFormat.format(
-						"Creating reference {0} starting at commit {1}",
-						branch, created.getSha()));
-				if (!dryRun)
+				info(MessageFormat.format("Creating reference {0} starting at commit {1}", branch, created.getSha()));
+				if (!dryRun) {
 					service.createReference(repository, ref);
+				}
 			} catch (IOException e) {
-				throw new MojoExecutionException("Error creating reference: "
-						+ getExceptionMessage(e), e);
+				throw new MojoExecutionException("Error creating reference: " + e.getMessage(), e);
 			}
+		}
+	}
+
+	/**
+	 * Create blob
+	 *
+	 * @param service
+	 * @param repository
+	 * @param path
+	 * @return blob SHA-1
+	 * @throws MojoExecutionException
+	 */
+	private String createBlob(DataService service, RepositoryId repository, String path) throws MojoExecutionException {
+		File file = new File(outputDirectory, path);
+		long length = file.length();
+		int size = length > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) length;
+		ByteArrayOutputStream output = new ByteArrayOutputStream(size);
+
+		try (FileInputStream stream = new FileInputStream(file);) {
+			byte[] buffer = new byte[8192];
+			int read;
+			while ((read = stream.read(buffer)) != -1) {
+				output.write(buffer, 0, read);
+			}
+		} catch (IOException e) {
+			throw new MojoExecutionException("Error reading file: " + e.getMessage(), e);
+		}
+
+		Blob blob = new Blob().setEncoding(ENCODING_BASE64);
+		String encoded = EncodingUtils.toBase64(output.toByteArray());
+		blob.setContent(encoded);
+
+		try {
+			if (isDebug()) {
+				debug(MessageFormat.format("Creating blob from {0}", file.getAbsolutePath()));
+			}
+			if (!dryRun) {
+				return service.createBlob(repository, blob);
+			} else {
+				return null;
+			}
+		} catch (IOException e) {
+			throw new MojoExecutionException("Error creating blob: " + e.getMessage(), e);
 		}
 	}
 }
