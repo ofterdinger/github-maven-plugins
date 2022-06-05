@@ -45,8 +45,7 @@ public class RepositoryUtilsTest {
 	 */
 	@Test
 	public void extractFromAnonymousUrl() {
-		RepositoryId repo = RepositoryUtils
-				.extractRepositoryFromScmUrl("scm:git:git://github.com/owner/project.git");
+		RepositoryId repo = RepositoryUtils.extractRepositoryFromScmUrl("scm:git:git://github.com/owner/project.git");
 		assertNotNull(repo);
 		assertEquals("owner", repo.getOwner());
 		assertEquals("project", repo.getName());
@@ -58,14 +57,10 @@ public class RepositoryUtilsTest {
 	 */
 	@Test
 	public void extractFromMalformedUrls() {
-		assertNull(RepositoryUtils
-				.extractRepositoryFromScmUrl("scm:git:git://github.com"));
-		assertNull(RepositoryUtils
-				.extractRepositoryFromScmUrl("scm:git:git://github.com/"));
-		assertNull(RepositoryUtils
-				.extractRepositoryFromScmUrl("scm:git:git@github.com"));
-		assertNull(RepositoryUtils
-				.extractRepositoryFromScmUrl("scm:git:git@github.com:"));
+		assertNull(RepositoryUtils.extractRepositoryFromScmUrl("scm:git:git://github.com"));
+		assertNull(RepositoryUtils.extractRepositoryFromScmUrl("scm:git:git://github.com/"));
+		assertNull(RepositoryUtils.extractRepositoryFromScmUrl("scm:git:git@github.com"));
+		assertNull(RepositoryUtils.extractRepositoryFromScmUrl("scm:git:git@github.com:"));
 		assertNull(RepositoryUtils.extractRepositoryFromScmUrl(null));
 		assertNull(RepositoryUtils.extractRepositoryFromScmUrl(""));
 		assertNull(RepositoryUtils.extractRepositoryFromScmUrl(" "));
@@ -76,44 +71,41 @@ public class RepositoryUtilsTest {
 	 */
 	@Test
 	public void extractFromSshUrl() {
-		RepositoryId repo = RepositoryUtils
-				.extractRepositoryFromScmUrl("scm:git:git@github.com:owner/project.git");
+		RepositoryId repo = RepositoryUtils.extractRepositoryFromScmUrl("scm:git:git@github.com:owner/project.git");
 		assertNotNull(repo);
 		assertEquals("owner", repo.getOwner());
 		assertEquals("project", repo.getName());
 		assertEquals("owner/project", repo.generateId());
 	}
 
-    @Test
-    public void extractRepositoryFromEmptyProject() {
-        MavenProject project = Mockito.mock(MavenProject.class);
-        RepositoryId repositoryId = RepositoryUtils.getRepository(project, null, null);
-        assertThat(repositoryId).isNull();
-    }
+	@Test
+	public void extractRepositoryFromEmptyProject() {
+		MavenProject project = Mockito.mock(MavenProject.class);
+		RepositoryId repositoryId = RepositoryUtils.getRepository(project, null, null);
+		assertThat(repositoryId).isNull();
+	}
 
-    @Test
-    public void extractRepositoryFromEmptyProjectWithUrl() {
-        MavenProject project = Mockito.mock(MavenProject.class);
-        when(project.getUrl()).thenReturn("https://github.com/nanoko-project/coffee-mill-maven-plugin");
-        RepositoryId repositoryId = RepositoryUtils.getRepository(project, null, null);
-        assertThat(repositoryId).isNotNull();
-        assertThat(repositoryId.getName()).isEqualTo("coffee-mill-maven-plugin");
-        assertThat(repositoryId.getOwner()).isEqualTo("nanoko-project");
-    }
+	@Test
+	public void extractRepositoryFromEmptyProjectWithUrl() {
+		MavenProject project = Mockito.mock(MavenProject.class);
+		when(project.getUrl()).thenReturn("https://github.com/nanoko-project/coffee-mill-maven-plugin");
+		RepositoryId repositoryId = RepositoryUtils.getRepository(project, null, null);
+		assertThat(repositoryId).isNotNull();
+		assertThat(repositoryId.getName()).isEqualTo("coffee-mill-maven-plugin");
+		assertThat(repositoryId.getOwner()).isEqualTo("nanoko-project");
+	}
 
-    @Test
-    public void extractRepositoryFromEmptyProjectWithSCM() {
-        Scm scm = Mockito.mock(Scm.class);
-        when(scm.getUrl()).thenReturn("https://github.com/nanoko-project/coffee-mill-maven-plugin");
-        MavenProject project = Mockito.mock(MavenProject.class);
-        when(project.getUrl()).thenReturn("must not be used");
-        when(project.getScm()).thenReturn(scm);
-        RepositoryId repositoryId = RepositoryUtils.getRepository(project, null, null);
-        assertThat(repositoryId).isNotNull();
-        assertThat(repositoryId.getName()).isEqualTo("coffee-mill-maven-plugin");
-        assertThat(repositoryId.getOwner()).isEqualTo("nanoko-project");
-    }
-
-
+	@Test
+	public void extractRepositoryFromEmptyProjectWithSCM() {
+		Scm scm = Mockito.mock(Scm.class);
+		when(scm.getUrl()).thenReturn("https://github.com/nanoko-project/coffee-mill-maven-plugin");
+		MavenProject project = Mockito.mock(MavenProject.class);
+		when(project.getUrl()).thenReturn("must not be used");
+		when(project.getScm()).thenReturn(scm);
+		RepositoryId repositoryId = RepositoryUtils.getRepository(project, null, null);
+		assertThat(repositoryId).isNotNull();
+		assertThat(repositoryId.getName()).isEqualTo("coffee-mill-maven-plugin");
+		assertThat(repositoryId.getOwner()).isEqualTo("nanoko-project");
+	}
 
 }

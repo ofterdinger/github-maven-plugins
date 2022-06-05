@@ -151,7 +151,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 		Proxy proxy = getProxy(settings, serverId, host);
 		if (null != proxy) {
 			try {
-				SettingsDecrypter settingsDecrypter = container.lookup(SettingsDecrypter.class);
+				SettingsDecrypter settingsDecrypter = this.container.lookup(SettingsDecrypter.class);
 				SettingsDecryptionResult result = settingsDecrypter
 						.decrypt(new DefaultSettingsDecryptionRequest(proxy));
 				proxy = result.getProxy();
@@ -276,7 +276,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 			debug(MessageFormat.format("Using ''{0}'' server credentials", serverId));
 		}
 		try {
-			SettingsDecrypter settingsDecrypter = container.lookup(SettingsDecrypter.class);
+			SettingsDecrypter settingsDecrypter = this.container.lookup(SettingsDecrypter.class);
 			SettingsDecryptionResult result = settingsDecrypter.decrypt(new DefaultSettingsDecryptionRequest(server));
 			server = result.getServer();
 		} catch (ComponentLookupException cle) {

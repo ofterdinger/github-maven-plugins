@@ -11,7 +11,7 @@ import com.google.common.util.concurrent.RateLimiter;
 
 public class RateLimitedGitHubClient extends GitHubClientEgit {
 
-	private volatile RateLimiter rateLimiter;
+	private volatile RateLimiter rateLimiter; // NOSONAR
 
 	public RateLimitedGitHubClient() {
 		super();
@@ -38,10 +38,8 @@ public class RateLimitedGitHubClient extends GitHubClientEgit {
 	}
 
 	private RateLimiter rateLimiter() {
-		RateLimiter rateLimiter = this.rateLimiter;
-
-		if (rateLimiter != null) {
-			return rateLimiter;
+		if (this.rateLimiter != null) {
+			return this.rateLimiter;
 		}
 
 		return initializeRateLimiter();
