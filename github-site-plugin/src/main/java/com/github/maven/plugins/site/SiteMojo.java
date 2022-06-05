@@ -62,8 +62,8 @@ import com.github.maven.plugins.core.PathUtils;
 import com.github.maven.plugins.core.StringUtils;
 
 /**
- * Mojo which copies files to a GitHub repository branch. This directly uses the GitHub data API to upload blobs, make commits, and update
- * references and so a local Git repository is not used.
+ * Mojo which copies files to a GitHub repository branch. This directly uses the GitHub data API to upload blobs, make
+ * commits, and update references and so a local Git repository is not used.
  *
  * @author Kevin Sawicki (kevin@github.com)
  */
@@ -130,8 +130,8 @@ public class SiteMojo extends GitHubProjectMojo {
 	private String host;
 
 	/**
-	 * The <em>id</em> of the server to use to retrieve the Github credentials. This id must identify a <em>server</em> from your
-	 * <em>setting.xml</em> file.
+	 * The <em>id</em> of the server to use to retrieve the Github credentials. This id must identify a <em>server</em>
+	 * from your <em>setting.xml</em> file.
 	 */
 	@Parameter(property = "github.site.server", defaultValue = "${github.global.server}")
 	private String server;
@@ -185,14 +185,15 @@ public class SiteMojo extends GitHubProjectMojo {
 	private boolean noJekyll;
 
 	/**
-	 * Set it to {@code true} to merge with existing the existing tree that is referenced by the commit that the ref currently points to
+	 * Set it to {@code true} to merge with existing the existing tree that is referenced by the commit that the ref
+	 * currently points to
 	 */
 	@Parameter(property = "github.site.merge")
 	private boolean merge;
 
 	/**
-	 * Show what blob, trees, commits, and references would be created/updated but don't actually perform any operations on the target GitHub
-	 * repository.
+	 * Show what blob, trees, commits, and references would be created/updated but don't actually perform any operations
+	 * on the target GitHub repository.
 	 */
 	@Parameter(property = "github.site.dryRun")
 	private boolean dryRun;
@@ -205,21 +206,21 @@ public class SiteMojo extends GitHubProjectMojo {
 
 	@Override
 	public void execute() throws MojoExecutionException {
-		if (skip) {
+		if (this.skip) {
 			info("Github Site Plugin execution skipped");
 			return;
 		}
 
-		RepositoryId repository = getRepository(project, repositoryOwner, repositoryName);
+		RepositoryId repository = getRepository(this.project, this.repositoryOwner, this.repositoryName);
 
-		if (dryRun) {
+		if (this.dryRun) {
 			info("Dry run mode, repository will not be modified");
 		}
 
 		// Find files to include
-		String baseDir = outputDirectory.getAbsolutePath();
-		String[] includePaths = StringUtils.removeEmpties(includes);
-		String[] excludePaths = StringUtils.removeEmpties(excludes);
+		String baseDir = this.outputDirectory.getAbsolutePath();
+		String[] includePaths = StringUtils.removeEmpties(this.includes);
+		String[] excludePaths = StringUtils.removeEmpties(this.excludes);
 
 		if (isDebug()) {
 			debug(MessageFormat.format("Scanning {0} and including {1} and exluding {2}", baseDir,
@@ -251,19 +252,9 @@ public class SiteMojo extends GitHubProjectMojo {
 		}
 	}
 
-	private String[] copyOfRange(String[] original, int from, int to) {
-		int newLength = to - from;
-		if (newLength < 0) {
-			throw new IllegalArgumentException(from + " > " + to);
-		}
-
-		String[] copy = new String[newLength];
-		System.arraycopy(original, from, copy, 0, Math.min(original.length - from, newLength));
-		return copy;
-	}
-
 	private void doExecute(RepositoryId repository, String[] paths) throws MojoExecutionException {
-		DataService service = new DataService(createClient(host, userName, password, oauth2Token, server, settings));
+		DataService service = new DataService(
+				createClient(this.host, this.userName, this.password, this.oauth2Token, this.server, this.settings));
 
 		// Write blobs and build tree entries
 		List<TreeEntry> entries = new ArrayList<>(paths.length);
@@ -279,7 +270,7 @@ public class SiteMojo extends GitHubProjectMojo {
 			}
 		}
 
-		boolean createNoJekyll = noJekyll;
+		boolean createNoJekyll = this.noJekyll;
 
 		for (String path : paths) {
 			TreeEntry entry = new TreeEntry();
@@ -304,7 +295,7 @@ public class SiteMojo extends GitHubProjectMojo {
 				debug("Creating empty .nojekyll blob at root of tree");
 			}
 
-			if (!dryRun)
+			if (!this.dryRun)
 				try {
 					entry.setSha(
 							service.createBlob(repository, new Blob().setEncoding(ENCODING_BASE64).setContent("")));
@@ -316,7 +307,7 @@ public class SiteMojo extends GitHubProjectMojo {
 
 		Reference ref = null;
 		try {
-			ref = service.getReference(repository, branch);
+			ref = service.getReference(repository, this.branch);
 		} catch (RequestException e) {
 			if (404 != e.getStatus()) {
 				throw new MojoExecutionException("Error getting reference: " + e.getMessage(), e);
@@ -340,13 +331,13 @@ public class SiteMojo extends GitHubProjectMojo {
 			else
 				info("Creating tree with 1 blob entry");
 			String baseTree = null;
-			if (merge && ref != null) {
+			if (this.merge && ref != null) {
 				Tree currentTree = service.getCommit(repository, ref.getObject().getSha()).getTree();
 				if (currentTree != null)
 					baseTree = currentTree.getSha();
 				info(MessageFormat.format("Merging with tree {0}", baseTree));
 			}
-			if (!dryRun)
+			if (!this.dryRun)
 				tree = service.createTree(repository, entries, baseTree);
 			else
 				tree = new Tree();
@@ -356,7 +347,7 @@ public class SiteMojo extends GitHubProjectMojo {
 
 		// Build commit
 		Commit commit = new Commit();
-		commit.setMessage(message);
+		commit.setMessage(this.message);
 		commit.setTree(tree);
 
 		try {
@@ -380,7 +371,7 @@ public class SiteMojo extends GitHubProjectMojo {
 
 		Commit created;
 		try {
-			if (!dryRun) {
+			if (!this.dryRun) {
 				created = service.createCommit(repository, commit);
 			} else {
 				created = new Commit();
@@ -396,20 +387,21 @@ public class SiteMojo extends GitHubProjectMojo {
 			// Update existing reference
 			ref.setObject(object);
 			try {
-				info(MessageFormat.format("Updating reference {0} from {1} to {2}", branch,
+				info(MessageFormat.format("Updating reference {0} from {1} to {2}", this.branch,
 						commit.getParents().get(0).getSha(), created.getSha()));
-				if (!dryRun) {
-					service.editReference(repository, ref, force);
+				if (!this.dryRun) {
+					service.editReference(repository, ref, this.force);
 				}
 			} catch (IOException e) {
 				throw new MojoExecutionException("Error editing reference: " + e.getMessage(), e);
 			}
 		} else {
 			// Create new reference
-			ref = new Reference().setObject(object).setRef(branch);
+			ref = new Reference().setObject(object).setRef(this.branch);
 			try {
-				info(MessageFormat.format("Creating reference {0} starting at commit {1}", branch, created.getSha()));
-				if (!dryRun) {
+				info(MessageFormat.format("Creating reference {0} starting at commit {1}", this.branch,
+						created.getSha()));
+				if (!this.dryRun) {
 					service.createReference(repository, ref);
 				}
 			} catch (IOException e) {
@@ -428,7 +420,7 @@ public class SiteMojo extends GitHubProjectMojo {
 	 * @throws MojoExecutionException
 	 */
 	private String createBlob(DataService service, RepositoryId repository, String path) throws MojoExecutionException {
-		File file = new File(outputDirectory, path);
+		File file = new File(this.outputDirectory, path);
 		long length = file.length();
 		int size = length > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) length;
 		ByteArrayOutputStream output = new ByteArrayOutputStream(size);
@@ -451,7 +443,7 @@ public class SiteMojo extends GitHubProjectMojo {
 			if (isDebug()) {
 				debug(MessageFormat.format("Creating blob from {0}", file.getAbsolutePath()));
 			}
-			if (!dryRun) {
+			if (!this.dryRun) {
 				return service.createBlob(repository, blob);
 			} else {
 				return null;
@@ -460,4 +452,18 @@ public class SiteMojo extends GitHubProjectMojo {
 			throw new MojoExecutionException("Error creating blob: " + e.getMessage(), e);
 		}
 	}
+
+	// static helpers
+
+	private static String[] copyOfRange(String[] original, int from, int to) {
+		int newLength = to - from;
+		if (newLength < 0) {
+			throw new IllegalArgumentException(from + " > " + to);
+		}
+
+		String[] copy = new String[newLength];
+		System.arraycopy(original, from, copy, 0, Math.min(original.length - from, newLength));
+		return copy;
+	}
+
 }
