@@ -50,36 +50,34 @@ public class ClientCredentialsTest {
 
 	private class TestMojo extends GitHubProjectMojo {
 
-		private final AtomicReference<String> user = new AtomicReference<String>();
+		private final AtomicReference<String> user = new AtomicReference<>();
 
-		private final AtomicReference<String> password = new AtomicReference<String>();
+		private final AtomicReference<String> password = new AtomicReference<>();
 
-		private final AtomicReference<String> token = new AtomicReference<String>();
+		private final AtomicReference<String> token = new AtomicReference<>();
 
+		@Override
 		protected GitHubClient createClient() {
-			try
-			{
+			try {
 				DefaultPlexusContainer container = new DefaultPlexusContainer();
 				Context context = container.getContext();
-				context.put( PlexusConstants.PLEXUS_KEY, container );
-				super.contextualize(context );
-			}
-			catch ( PlexusContainerException pce )
-			{
-				pce.printStackTrace( System.err );
-			}
-			catch ( ContextException ce )
-			{
-				ce.printStackTrace( System.err );
+				context.put(PlexusConstants.PLEXUS_KEY, container);
+				super.contextualize(context);
+			} catch (PlexusContainerException pce) {
+				pce.printStackTrace(System.err);
+			} catch (ContextException ce) {
+				ce.printStackTrace(System.err);
 			}
 
 			return new GitHubClient() {
+				@Override
 				public GitHubClient setCredentials(String user, String password) {
 					TestMojo.this.user.set(user);
 					TestMojo.this.password.set(password);
 					return super.setCredentials(user, password);
 				}
 
+				@Override
 				public GitHubClient setOAuth2Token(String token) {
 					TestMojo.this.token.set(token);
 					return super.setOAuth2Token(token);
@@ -89,16 +87,13 @@ public class ClientCredentialsTest {
 		}
 
 		@Override
-		public GitHubClient createClient(String host, String userName,
-				String password, String oauth2Token, String serverId,
-				Settings settings)
-				throws MojoExecutionException {
-			return super.createClient(host, userName, password, oauth2Token,
-					serverId, settings);
+		public GitHubClient createClient(String host, String userName, String password, String oauth2Token,
+				String serverId, Settings settings) throws MojoExecutionException {
+			return super.createClient(host, userName, password, oauth2Token, serverId, settings);
 		}
 
-		public void execute() throws MojoExecutionException,
-				MojoFailureException {
+		@Override
+		public void execute() throws MojoExecutionException, MojoFailureException {
 			// Intentionally left blank
 		}
 	}
@@ -111,8 +106,7 @@ public class ClientCredentialsTest {
 	@Test
 	public void validUserNameAndPassword() throws Exception {
 		TestMojo mojo = new TestMojo();
-		GitHubClient client = mojo.createClient(null, "a", "b", null, null,
-				null);
+		GitHubClient client = mojo.createClient(null, "a", "b", null, null, null);
 		assertNotNull(client);
 		assertEquals("a", mojo.user.get());
 		assertEquals("b", mojo.password.get());
@@ -149,8 +143,7 @@ public class ClientCredentialsTest {
 	@Test
 	public void validOAuth2Token() throws Exception {
 		TestMojo mojo = new TestMojo();
-		GitHubClient client = mojo.createClient(null, null, null, "token",
-				null, null);
+		GitHubClient client = mojo.createClient(null, null, null, "token", null, null);
 		assertNotNull(client);
 		assertNull(mojo.user.get());
 		assertNull(mojo.password.get());
@@ -165,8 +158,7 @@ public class ClientCredentialsTest {
 	@Test
 	public void validOAuth2TokenWithUsername() throws Exception {
 		TestMojo mojo = new TestMojo();
-		GitHubClient client = mojo.createClient(null, "a", null, "token", null,
-				null);
+		GitHubClient client = mojo.createClient(null, "a", null, "token", null, null);
 		assertNotNull(client);
 		assertNull(mojo.user.get());
 		assertNull(mojo.password.get());
@@ -188,8 +180,7 @@ public class ClientCredentialsTest {
 		server.setUsername("a");
 		server.setPassword("b");
 		settings.addServer(server);
-		GitHubClient client = mojo.createClient(null, null, null, null,
-				"server", settings);
+		GitHubClient client = mojo.createClient(null, null, null, null, "server", settings);
 		assertNotNull(client);
 		assertEquals("a", mojo.user.get());
 		assertEquals("b", mojo.password.get());
@@ -227,8 +218,7 @@ public class ClientCredentialsTest {
 		server.setId("server");
 		server.setPassword("b");
 		settings.addServer(server);
-		GitHubClient client = mojo.createClient(null, null, null, null,
-				"server", settings);
+		GitHubClient client = mojo.createClient(null, null, null, null, "server", settings);
 		assertNotNull(client);
 		assertNull(mojo.user.get());
 		assertNull(mojo.password.get());
@@ -267,7 +257,7 @@ public class ClientCredentialsTest {
 	public void missingServerEmptyServers() throws Exception {
 		TestMojo mojo = new TestMojo();
 		Settings settings = new Settings();
-		settings.setServers(Collections.<Server> emptyList());
+		settings.setServers(Collections.<Server>emptyList());
 		mojo.createClient(null, null, null, null, "server", settings);
 	}
 

@@ -53,14 +53,10 @@ public class StringUtilsTest {
 	 */
 	@Test
 	public void removeEmpties() {
-		assertArrayEquals(new String[0],
-				StringUtils.removeEmpties((String[]) null));
-		assertArrayEquals(new String[0],
-				StringUtils.removeEmpties((String) null));
+		assertArrayEquals(new String[0], StringUtils.removeEmpties((String[]) null));
+		assertArrayEquals(new String[0], StringUtils.removeEmpties((String) null));
 		assertArrayEquals(new String[0], StringUtils.removeEmpties(""));
-		assertArrayEquals(new String[] { "content" },
-				StringUtils.removeEmpties("", "content"));
-		assertArrayEquals(new String[] { "content" },
-				StringUtils.removeEmpties(null, "content"));
+		assertArrayEquals(new String[] { "content" }, StringUtils.removeEmpties("", "content"));
+		assertArrayEquals(new String[] { "content" }, StringUtils.removeEmpties(null, "content"));
 	}
 }

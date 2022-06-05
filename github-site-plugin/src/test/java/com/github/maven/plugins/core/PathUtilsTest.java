@@ -60,10 +60,8 @@ public class PathUtilsTest {
 	 */
 	@Test
 	public void singleInclude() throws IOException {
-		File include = File
-				.createTempFile("include", ".txt", createDirectory());
-		String[] paths = PathUtils.getMatchingPaths(
-				new String[] { include.getName() }, null, include.getParent());
+		File include = File.createTempFile("include", ".txt", createDirectory());
+		String[] paths = PathUtils.getMatchingPaths(new String[] { include.getName() }, null, include.getParent());
 		assertNotNull(paths);
 		assertEquals(1, paths.length);
 		assertEquals(include.getName(), paths[0]);
@@ -80,8 +78,7 @@ public class PathUtilsTest {
 		File include = File.createTempFile("include", ".filetomatch", dir);
 		File.createTempFile("neutral", ".notmatch", dir);
 		File exclude = File.createTempFile("exlude", ".filetomatch", dir);
-		String[] paths = PathUtils.getMatchingPaths(
-				new String[] { "*.filetomatch" },
+		String[] paths = PathUtils.getMatchingPaths(new String[] { "*.filetomatch" },
 				new String[] { exclude.getName() }, include.getParent());
 		assertNotNull(paths);
 		assertEquals(1, paths.length);
@@ -98,8 +95,7 @@ public class PathUtilsTest {
 		File dir = createDirectory();
 		File include = File.createTempFile("include", ".filetomatch", dir);
 		File exclude = File.createTempFile("exlude", ".filetomatch", dir);
-		String[] paths = PathUtils.getMatchingPaths(null,
-				new String[] { exclude.getName() }, include.getParent());
+		String[] paths = PathUtils.getMatchingPaths(null, new String[] { exclude.getName() }, include.getParent());
 		assertNotNull(paths);
 		assertEquals(1, paths.length);
 		assertEquals(include.getName(), paths[0]);

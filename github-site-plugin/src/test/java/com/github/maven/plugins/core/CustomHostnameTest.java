@@ -43,29 +43,27 @@ public class CustomHostnameTest {
 
 	private class TestMojo extends GitHubProjectMojo {
 
-		private final AtomicReference<String> host = new AtomicReference<String>();
+		private final AtomicReference<String> host = new AtomicReference<>();
 
+		@Override
 		protected GitHubClient createClient() {
-			host.set(null);
+			this.host.set(null);
 			return super.createClient();
 		}
 
-		protected GitHubClient createClient(String hostname)
-				throws MojoExecutionException {
-			host.set(hostname);
+		@Override
+		protected GitHubClient createClient(String hostname) throws MojoExecutionException {
+			this.host.set(hostname);
 			return super.createClient(hostname);
 		}
 
-		public GitHubClient createClient(String host, String userName,
-				String password, String oauth2Token, String serverId,
-				Settings settings, MavenSession session)
-				throws MojoExecutionException {
-			return super.createClient(host, userName, password, oauth2Token,
-					serverId, settings);
+		public GitHubClient createClient(String host, String userName, String password, String oauth2Token,
+				String serverId, Settings settings, MavenSession session) throws MojoExecutionException {
+			return super.createClient(host, userName, password, oauth2Token, serverId, settings);
 		}
 
-		public void execute() throws MojoExecutionException,
-				MojoFailureException {
+		@Override
+		public void execute() throws MojoExecutionException, MojoFailureException {
 			// Intentionally left blank
 		}
 	}
@@ -78,8 +76,7 @@ public class CustomHostnameTest {
 	@Test
 	public void validHostname() throws Exception {
 		TestMojo mojo = new TestMojo();
-		GitHubClient client = mojo.createClient("h", "a", "b", null, null,
-				null, null);
+		GitHubClient client = mojo.createClient("h", "a", "b", null, null, null, null);
 		assertNotNull(client);
 		assertEquals("h", mojo.host.get());
 	}
@@ -92,8 +89,7 @@ public class CustomHostnameTest {
 	@Test
 	public void nullHostname() throws Exception {
 		TestMojo mojo = new TestMojo();
-		GitHubClient client = mojo.createClient(null, "a", "b", null, null,
-				null, null);
+		GitHubClient client = mojo.createClient(null, "a", "b", null, null, null, null);
 		assertNotNull(client);
 		assertNull(mojo.host.get());
 	}
@@ -106,8 +102,7 @@ public class CustomHostnameTest {
 	@Test
 	public void emptyHost() throws Exception {
 		TestMojo mojo = new TestMojo();
-		GitHubClient client = mojo.createClient("", "a", "b", null, null, null,
-				null);
+		GitHubClient client = mojo.createClient("", "a", "b", null, null, null, null);
 		assertNotNull(client);
 		assertNull(mojo.host.get());
 	}

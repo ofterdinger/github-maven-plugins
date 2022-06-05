@@ -46,35 +46,33 @@ import org.junit.Test;
 /**
  * NonProxy tests for the various configuration
  *
- * @author  Kiyofumi Kondoh
+ * @author Kiyofumi Kondoh
  */
 public class MatchNonProxyTest {
 
 	private class TestMojo extends GitHubProjectMojo {
 
-		private final AtomicReference<String> host = new AtomicReference<String>();
+		private final AtomicReference<String> host = new AtomicReference<>();
 
+		@Override
 		protected GitHubClient createClient() {
-			host.set(null);
+			this.host.set(null);
 			return super.createClient();
 		}
 
-		protected GitHubClient createClient(String hostname)
-				throws MojoExecutionException {
-			host.set(hostname);
+		@Override
+		protected GitHubClient createClient(String hostname) throws MojoExecutionException {
+			this.host.set(hostname);
 			return super.createClient(hostname);
 		}
 
-		public GitHubClient createClient(String host, String userName,
-				String password, String oauth2Token, String serverId,
-				Settings settings, MavenSession session)
-				throws MojoExecutionException {
-			return super.createClient(host, userName, password, oauth2Token,
-					serverId, settings);
+		public GitHubClient createClient(String host, String userName, String password, String oauth2Token,
+				String serverId, Settings settings, MavenSession session) throws MojoExecutionException {
+			return super.createClient(host, userName, password, oauth2Token, serverId, settings);
 		}
 
-		public void execute() throws MojoExecutionException,
-				MojoFailureException {
+		@Override
+		public void execute() throws MojoExecutionException, MojoFailureException {
 			// Intentionally left blank
 		}
 	}
@@ -83,45 +81,44 @@ public class MatchNonProxyTest {
 	 * matchNonProxy tests with single nonProxyHosts
 	 */
 	@Test
-	public void matchNonProxyWithSingle_nonPorxyHosts() throws Exception
-	{
+	public void matchNonProxyWithSingle_nonPorxyHosts() throws Exception {
 		SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
-		assertNotNull( builder );
+		assertNotNull(builder);
 
 		DefaultSettingsBuildingRequest request = new DefaultSettingsBuildingRequest();
-		request.setSystemProperties( System.getProperties() );
-		FileSettingsSource fileSource = new FileSettingsSource( new File("src/test/resources/settings/proxy/nonproxy-github.xml").getAbsoluteFile() );
-		request.setUserSettingsSource( fileSource );
+		request.setSystemProperties(System.getProperties());
+		FileSettingsSource fileSource = new FileSettingsSource(
+				new File("src/test/resources/settings/proxy/nonproxy-github.xml").getAbsoluteFile());
+		request.setUserSettingsSource(fileSource);
 
-		SettingsBuildingResult result = builder.build( request );
-		assertNotNull( result );
-		assertNotNull( result.getEffectiveSettings() );
+		SettingsBuildingResult result = builder.build(request);
+		assertNotNull(result);
+		assertNotNull(result.getEffectiveSettings());
 
 		TestMojo mojo = new TestMojo();
-		assertNotNull( mojo );
+		assertNotNull(mojo);
 
-		assertNotNull( result.getEffectiveSettings().getProxies() );
-		for ( final Proxy proxy : result.getEffectiveSettings().getProxies() )
-		{
+		assertNotNull(result.getEffectiveSettings().getProxies());
+		for (final Proxy proxy : result.getEffectiveSettings().getProxies()) {
 			{
-				final boolean isNonProxy = mojo.matchNonProxy( proxy, IGitHubConstants.HOST_DEFAULT );
-				assertTrue( isNonProxy );
+				final boolean isNonProxy = GitHubProjectMojo.matchNonProxy(proxy, IGitHubConstants.HOST_DEFAULT);
+				assertTrue(isNonProxy);
 			}
 			{
-				final boolean isNonProxy = mojo.matchNonProxy( proxy, IGitHubConstants.HOST_API );
-				assertFalse( isNonProxy );
+				final boolean isNonProxy = GitHubProjectMojo.matchNonProxy(proxy, IGitHubConstants.HOST_API);
+				assertFalse(isNonProxy);
 			}
 			{
-				final boolean isNonProxy = mojo.matchNonProxy( proxy, "hoge." + IGitHubConstants.HOST_DEFAULT );
-				assertFalse( isNonProxy );
+				final boolean isNonProxy = GitHubProjectMojo.matchNonProxy(proxy, "hoge." + IGitHubConstants.HOST_DEFAULT);
+				assertFalse(isNonProxy);
 			}
 			{
-				final boolean isNonProxy = mojo.matchNonProxy( proxy, "hoge" + IGitHubConstants.HOST_DEFAULT );
-				assertFalse( isNonProxy );
+				final boolean isNonProxy = GitHubProjectMojo.matchNonProxy(proxy, "hoge" + IGitHubConstants.HOST_DEFAULT);
+				assertFalse(isNonProxy);
 			}
 			{
-				final boolean isNonProxy = mojo.matchNonProxy( proxy, mojo.host.get() );
-				assertTrue( isNonProxy );
+				final boolean isNonProxy = GitHubProjectMojo.matchNonProxy(proxy, mojo.host.get());
+				assertTrue(isNonProxy);
 			}
 		}
 	}
@@ -130,45 +127,44 @@ public class MatchNonProxyTest {
 	 * matchNonProxy tests with multiple nonProxyHosts
 	 */
 	@Test
-	public void matchNonProxyWithMultiple_nonPorxyHosts() throws Exception
-	{
+	public void matchNonProxyWithMultiple_nonPorxyHosts() throws Exception {
 		SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
-		assertNotNull( builder );
+		assertNotNull(builder);
 
 		DefaultSettingsBuildingRequest request = new DefaultSettingsBuildingRequest();
-		request.setSystemProperties( System.getProperties() );
-		FileSettingsSource fileSource = new FileSettingsSource( new File("src/test/resources/settings/proxy/nonproxy-github_and_api.xml").getAbsoluteFile() );
-		request.setUserSettingsSource( fileSource );
+		request.setSystemProperties(System.getProperties());
+		FileSettingsSource fileSource = new FileSettingsSource(
+				new File("src/test/resources/settings/proxy/nonproxy-github_and_api.xml").getAbsoluteFile());
+		request.setUserSettingsSource(fileSource);
 
-		SettingsBuildingResult result = builder.build( request );
-		assertNotNull( result );
-		assertNotNull( result.getEffectiveSettings() );
+		SettingsBuildingResult result = builder.build(request);
+		assertNotNull(result);
+		assertNotNull(result.getEffectiveSettings());
 
 		TestMojo mojo = new TestMojo();
-		assertNotNull( mojo );
+		assertNotNull(mojo);
 
-		assertNotNull( result.getEffectiveSettings().getProxies() );
-		for ( final Proxy proxy : result.getEffectiveSettings().getProxies() )
-		{
+		assertNotNull(result.getEffectiveSettings().getProxies());
+		for (final Proxy proxy : result.getEffectiveSettings().getProxies()) {
 			{
-				final boolean isNonProxy = mojo.matchNonProxy( proxy, IGitHubConstants.HOST_DEFAULT );
-				assertTrue( isNonProxy );
+				final boolean isNonProxy = GitHubProjectMojo.matchNonProxy(proxy, IGitHubConstants.HOST_DEFAULT);
+				assertTrue(isNonProxy);
 			}
 			{
-				final boolean isNonProxy = mojo.matchNonProxy( proxy, IGitHubConstants.HOST_API );
-				assertTrue( isNonProxy );
+				final boolean isNonProxy = GitHubProjectMojo.matchNonProxy(proxy, IGitHubConstants.HOST_API);
+				assertTrue(isNonProxy);
 			}
 			{
-				final boolean isNonProxy = mojo.matchNonProxy( proxy, "hoge." + IGitHubConstants.HOST_DEFAULT );
-				assertFalse( isNonProxy );
+				final boolean isNonProxy = GitHubProjectMojo.matchNonProxy(proxy, "hoge." + IGitHubConstants.HOST_DEFAULT);
+				assertFalse(isNonProxy);
 			}
 			{
-				final boolean isNonProxy = mojo.matchNonProxy( proxy, "hoge" + IGitHubConstants.HOST_DEFAULT );
-				assertFalse( isNonProxy );
+				final boolean isNonProxy = GitHubProjectMojo.matchNonProxy(proxy, "hoge" + IGitHubConstants.HOST_DEFAULT);
+				assertFalse(isNonProxy);
 			}
 			{
-				final boolean isNonProxy = mojo.matchNonProxy( proxy, mojo.host.get() );
-				assertTrue( isNonProxy );
+				final boolean isNonProxy = GitHubProjectMojo.matchNonProxy(proxy, mojo.host.get());
+				assertTrue(isNonProxy);
 			}
 		}
 	}
@@ -177,80 +173,77 @@ public class MatchNonProxyTest {
 	 * matchNonProxy tests with wildcard nonProxyHosts
 	 */
 	@Test
-	public void matchNonProxyWithWildcard_nonPorxyHosts() throws Exception
-	{
+	public void matchNonProxyWithWildcard_nonPorxyHosts() throws Exception {
 		SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
-		assertNotNull( builder );
+		assertNotNull(builder);
 
 		DefaultSettingsBuildingRequest request = new DefaultSettingsBuildingRequest();
-		request.setSystemProperties( System.getProperties() );
-		FileSettingsSource fileSource = new FileSettingsSource( new File("src/test/resources/settings/proxy/nonproxy-github_wildcard.xml").getAbsoluteFile() );
-		request.setUserSettingsSource( fileSource );
+		request.setSystemProperties(System.getProperties());
+		FileSettingsSource fileSource = new FileSettingsSource(
+				new File("src/test/resources/settings/proxy/nonproxy-github_wildcard.xml").getAbsoluteFile());
+		request.setUserSettingsSource(fileSource);
 
-		SettingsBuildingResult result = builder.build( request );
-		assertNotNull( result );
-		assertNotNull( result.getEffectiveSettings() );
+		SettingsBuildingResult result = builder.build(request);
+		assertNotNull(result);
+		assertNotNull(result.getEffectiveSettings());
 
 		TestMojo mojo = new TestMojo();
-		assertNotNull( mojo );
+		assertNotNull(mojo);
 
-		assertNotNull( result.getEffectiveSettings().getProxies() );
-		for ( final Proxy proxy : result.getEffectiveSettings().getProxies() )
-		{
+		assertNotNull(result.getEffectiveSettings().getProxies());
+		for (final Proxy proxy : result.getEffectiveSettings().getProxies()) {
 			{
-				final boolean isNonProxy = mojo.matchNonProxy( proxy, IGitHubConstants.HOST_DEFAULT );
-				assertTrue( isNonProxy );
+				final boolean isNonProxy = GitHubProjectMojo.matchNonProxy(proxy, IGitHubConstants.HOST_DEFAULT);
+				assertTrue(isNonProxy);
 			}
 			{
-				final boolean isNonProxy = mojo.matchNonProxy( proxy, IGitHubConstants.HOST_API );
-				assertTrue( isNonProxy );
+				final boolean isNonProxy = GitHubProjectMojo.matchNonProxy(proxy, IGitHubConstants.HOST_API);
+				assertTrue(isNonProxy);
 			}
 			{
-				final boolean isNonProxy = mojo.matchNonProxy( proxy, "hoge." + IGitHubConstants.HOST_DEFAULT );
-				assertTrue( isNonProxy );
+				final boolean isNonProxy = GitHubProjectMojo.matchNonProxy(proxy, "hoge." + IGitHubConstants.HOST_DEFAULT);
+				assertTrue(isNonProxy);
 			}
 			{
-				final boolean isNonProxy = mojo.matchNonProxy( proxy, "hoge" + IGitHubConstants.HOST_DEFAULT );
-				assertTrue( isNonProxy );
+				final boolean isNonProxy = GitHubProjectMojo.matchNonProxy(proxy, "hoge" + IGitHubConstants.HOST_DEFAULT);
+				assertTrue(isNonProxy);
 			}
 			{
-				final boolean isNonProxy = mojo.matchNonProxy( proxy, mojo.host.get() );
-				assertTrue( isNonProxy );
+				final boolean isNonProxy = GitHubProjectMojo.matchNonProxy(proxy, mojo.host.get());
+				assertTrue(isNonProxy);
 			}
 		}
 	}
-
-
-
 
 	/**
 	 * getProxy tests with single nonProxyHosts
 	 */
 	@Test
-	public void getProxyWithSingle_nonProxyHosts() throws Exception
-	{
+	public void getProxyWithSingle_nonProxyHosts() throws Exception {
 		SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
-		assertNotNull( builder );
+		assertNotNull(builder);
 
 		DefaultSettingsBuildingRequest request = new DefaultSettingsBuildingRequest();
-		request.setSystemProperties( System.getProperties() );
-		FileSettingsSource fileSource = new FileSettingsSource( new File("src/test/resources/settings/proxy/nonproxy-github.xml").getAbsoluteFile() );
-		request.setUserSettingsSource( fileSource );
+		request.setSystemProperties(System.getProperties());
+		FileSettingsSource fileSource = new FileSettingsSource(
+				new File("src/test/resources/settings/proxy/nonproxy-github.xml").getAbsoluteFile());
+		request.setUserSettingsSource(fileSource);
 
-		SettingsBuildingResult result = builder.build( request );
-		assertNotNull( result );
-		assertNotNull( result.getEffectiveSettings() );
+		SettingsBuildingResult result = builder.build(request);
+		assertNotNull(result);
+		assertNotNull(result.getEffectiveSettings());
 
 		TestMojo mojo = new TestMojo();
-		assertNotNull( mojo );
+		assertNotNull(mojo);
 
 		{
-			Proxy proxy = mojo.getProxy( result.getEffectiveSettings(), "intra_github-test-nonproxy", mojo.host.get() );
-			assertNull( proxy );
+			Proxy proxy = GitHubProjectMojo.getProxy(result.getEffectiveSettings(), "intra_github-test-nonproxy", mojo.host.get());
+			assertNull(proxy);
 		}
 		{
-			Proxy proxy = mojo.getProxy( result.getEffectiveSettings(), "intra_github-test-nonproxy", "intra-github.com" );
-			assertNotNull( proxy );
+			Proxy proxy = GitHubProjectMojo.getProxy(result.getEffectiveSettings(), "intra_github-test-nonproxy",
+					"intra-github.com");
+			assertNotNull(proxy);
 		}
 	}
 
@@ -258,34 +251,36 @@ public class MatchNonProxyTest {
 	 * getProxy tests with nonProxyHosts, which have same id
 	 */
 	@Test
-	public void getProxyIntraWithSameId() throws Exception
-	{
+	public void getProxyIntraWithSameId() throws Exception {
 		SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
-		assertNotNull( builder );
+		assertNotNull(builder);
 
 		DefaultSettingsBuildingRequest request = new DefaultSettingsBuildingRequest();
-		request.setSystemProperties( System.getProperties() );
-		FileSettingsSource fileSource = new FileSettingsSource( new File("src/test/resources/settings/proxy/nonproxy-intra_github.xml").getAbsoluteFile() );
-		request.setUserSettingsSource( fileSource );
+		request.setSystemProperties(System.getProperties());
+		FileSettingsSource fileSource = new FileSettingsSource(
+				new File("src/test/resources/settings/proxy/nonproxy-intra_github.xml").getAbsoluteFile());
+		request.setUserSettingsSource(fileSource);
 
-		SettingsBuildingResult result = builder.build( request );
-		assertNotNull( result );
-		assertNotNull( result.getEffectiveSettings() );
+		SettingsBuildingResult result = builder.build(request);
+		assertNotNull(result);
+		assertNotNull(result.getEffectiveSettings());
 
 		TestMojo mojo = new TestMojo();
-		assertNotNull( mojo );
+		assertNotNull(mojo);
 
 		{
-			Proxy proxy = mojo.getProxy( result.getEffectiveSettings(), "intra_github-test-nonproxy", mojo.host.get() );
-			assertNotNull( proxy );
+			Proxy proxy = GitHubProjectMojo.getProxy(result.getEffectiveSettings(), "intra_github-test-nonproxy", mojo.host.get());
+			assertNotNull(proxy);
 		}
 		{
-			Proxy proxy = mojo.getProxy( result.getEffectiveSettings(), "intra_github-test-nonproxy", "intra-github.com" );
-			assertNull( proxy );
+			Proxy proxy = GitHubProjectMojo.getProxy(result.getEffectiveSettings(), "intra_github-test-nonproxy",
+					"intra-github.com");
+			assertNull(proxy);
 		}
 		{
-			Proxy proxy = mojo.getProxy( result.getEffectiveSettings(), "intra_github-test-nonproxy", "intra_github.com" );
-			assertNotNull( proxy );
+			Proxy proxy = GitHubProjectMojo.getProxy(result.getEffectiveSettings(), "intra_github-test-nonproxy",
+					"intra_github.com");
+			assertNotNull(proxy);
 		}
 	}
 
@@ -293,36 +288,37 @@ public class MatchNonProxyTest {
 	 * getProxy tests with nonProxyHosts, which doesn't have same id
 	 */
 	@Test
-	public void getProxyIntraNoSameId() throws Exception
-	{
+	public void getProxyIntraNoSameId() throws Exception {
 		SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
-		assertNotNull( builder );
+		assertNotNull(builder);
 
 		DefaultSettingsBuildingRequest request = new DefaultSettingsBuildingRequest();
-		request.setSystemProperties( System.getProperties() );
-		FileSettingsSource fileSource = new FileSettingsSource( new File("src/test/resources/settings/proxy/nonproxy-intra_github-no_same_id.xml").getAbsoluteFile() );
-		request.setUserSettingsSource( fileSource );
+		request.setSystemProperties(System.getProperties());
+		FileSettingsSource fileSource = new FileSettingsSource(
+				new File("src/test/resources/settings/proxy/nonproxy-intra_github-no_same_id.xml").getAbsoluteFile());
+		request.setUserSettingsSource(fileSource);
 
-		SettingsBuildingResult result = builder.build( request );
-		assertNotNull( result );
-		assertNotNull( result.getEffectiveSettings() );
+		SettingsBuildingResult result = builder.build(request);
+		assertNotNull(result);
+		assertNotNull(result.getEffectiveSettings());
 
 		TestMojo mojo = new TestMojo();
-		assertNotNull( mojo );
+		assertNotNull(mojo);
 
 		{
-			Proxy proxy = mojo.getProxy( result.getEffectiveSettings(), "intra_github-test-nonproxy", mojo.host.get() );
-			assertNotNull( proxy );
+			Proxy proxy = GitHubProjectMojo.getProxy(result.getEffectiveSettings(), "intra_github-test-nonproxy", mojo.host.get());
+			assertNotNull(proxy);
 		}
 		{
-			Proxy proxy = mojo.getProxy( result.getEffectiveSettings(), "intra_github-test-nonproxy", "intra-github.com" );
-			assertNull( proxy );
+			Proxy proxy = GitHubProjectMojo.getProxy(result.getEffectiveSettings(), "intra_github-test-nonproxy",
+					"intra-github.com");
+			assertNull(proxy);
 		}
 		{
-			Proxy proxy = mojo.getProxy( result.getEffectiveSettings(), "intra_github-test-nonproxy", "intra_github.com" );
-			assertNotNull( proxy );
+			Proxy proxy = GitHubProjectMojo.getProxy(result.getEffectiveSettings(), "intra_github-test-nonproxy",
+					"intra_github.com");
+			assertNotNull(proxy);
 		}
 	}
-
 
 }
