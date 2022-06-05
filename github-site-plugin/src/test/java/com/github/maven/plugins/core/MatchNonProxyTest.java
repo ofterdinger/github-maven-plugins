@@ -34,6 +34,7 @@ import org.apache.maven.settings.Proxy;
 import org.apache.maven.settings.building.DefaultSettingsBuilderFactory;
 import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuilder;
+import org.apache.maven.settings.building.SettingsBuildingException;
 import org.apache.maven.settings.building.SettingsBuildingResult;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.client.IGitHubConstants;
@@ -70,9 +71,10 @@ public class MatchNonProxyTest {
 
 	/**
 	 * matchNonProxy tests with single nonProxyHosts
+	 * @throws SettingsBuildingException
 	 */
 	@Test
-	public void matchNonProxyWithSingle_nonPorxyHosts() throws Exception {
+	public void matchNonProxyWithSingle_nonPorxyHosts() throws SettingsBuildingException  {
 		SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
 		assertNotNull(builder);
 
@@ -117,9 +119,10 @@ public class MatchNonProxyTest {
 
 	/**
 	 * matchNonProxy tests with multiple nonProxyHosts
+	 * @throws SettingsBuildingException
 	 */
 	@Test
-	public void matchNonProxyWithMultiple_nonPorxyHosts() throws Exception {
+	public void matchNonProxyWithMultiple_nonPorxyHosts() throws SettingsBuildingException  {
 		SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
 		assertNotNull(builder);
 
@@ -164,9 +167,11 @@ public class MatchNonProxyTest {
 
 	/**
 	 * matchNonProxy tests with wildcard nonProxyHosts
+	 *
+	 * @throws SettingsBuildingException
 	 */
 	@Test
-	public void matchNonProxyWithWildcard_nonPorxyHosts() throws Exception {
+	public void matchNonProxyWithWildcard_nonPorxyHosts() throws SettingsBuildingException  {
 		SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
 		assertNotNull(builder);
 
@@ -240,9 +245,10 @@ public class MatchNonProxyTest {
 
 	/**
 	 * getProxy tests with nonProxyHosts, which have same id
+	 * @throws SettingsBuildingException
 	 */
 	@Test
-	public void getProxyIntraWithSameId() throws Exception {
+	public void getProxyIntraWithSameId() throws SettingsBuildingException  {
 		SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
 		assertNotNull(builder);
 
@@ -273,9 +279,11 @@ public class MatchNonProxyTest {
 
 	/**
 	 * getProxy tests with nonProxyHosts, which doesn't have same id
+	 *
+	 * @throws SettingsBuildingException
 	 */
 	@Test
-	public void getProxyIntraNoSameId() throws Exception {
+	public void getProxyIntraNoSameId() throws SettingsBuildingException  {
 		SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
 		assertNotNull(builder);
 

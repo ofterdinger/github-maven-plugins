@@ -3,7 +3,6 @@ package com.github.maven.plugins.core;
 import static java.lang.Math.max;
 import static java.lang.System.currentTimeMillis;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 
 import com.github.maven.plugins.core.egit.GitHubClientEgit;
@@ -26,15 +25,15 @@ public class RateLimitedGitHubClient extends GitHubClientEgit {
 	}
 
 	@Override
-	protected HttpURLConnection createPost(String uri) throws IOException {
+	protected HttpURLConnection createPost(String uri) {
 		rateLimiter().acquire();
-		return super.createPost(uri);
+		return createPost(uri);
 	}
 
 	@Override
-	protected HttpURLConnection createPut(String uri) throws IOException {
+	protected HttpURLConnection createPut(String uri) {
 		rateLimiter().acquire();
-		return super.createPut(uri);
+		return createPut(uri);
 	}
 
 	private RateLimiter rateLimiter() {

@@ -71,10 +71,11 @@ public class CustomHostnameTest {
 	/**
 	 * Test custom hostname
 	 *
-	 * @throws Exception
+	 * @throws MojoExecutionException
+	 *
 	 */
 	@Test
-	public void validHostname() throws Exception {
+	public void validHostname() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		GitHubClient client = mojo.createClient("h", "a", "b", null, null, null);
 		assertNotNull(client);
@@ -84,10 +85,10 @@ public class CustomHostnameTest {
 	/**
 	 * Test null custom hostname
 	 *
-	 * @throws Exception
+	 * @throws MojoExecutionException
 	 */
 	@Test
-	public void nullHostname() throws Exception {
+	public void nullHostname() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		GitHubClient client = mojo.createClient(null, "a", "b", null, null, null);
 		assertNotNull(client);
@@ -97,10 +98,10 @@ public class CustomHostnameTest {
 	/**
 	 * Test empty custom hostname
 	 *
-	 * @throws Exception
+	 * @throws MojoExecutionException
 	 */
 	@Test
-	public void emptyHost() throws Exception {
+	public void emptyHost() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		GitHubClient client = mojo.createClient("", "a", "b", null, null, null);
 		assertNotNull(client);

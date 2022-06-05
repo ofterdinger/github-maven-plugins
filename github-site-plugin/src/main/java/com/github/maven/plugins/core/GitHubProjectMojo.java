@@ -56,6 +56,8 @@ import com.google.common.annotations.VisibleForTesting;
  * @author Kevin Sawicki (kevin@github.com)
  */
 public abstract class GitHubProjectMojo extends AbstractMojo implements Contextualizable {
+	private static final String HTTPS = "https".intern();
+	private static final String HTTP = "http".intern();
 
 	@Requirement
 	private PlexusContainer container;
@@ -180,6 +182,25 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 		} else {
 			throw new MojoExecutionException("No authentication credentials configured");
 		}
+	}
+
+	/**
+	 * Get repository and throw a {@link MojoExecutionException} on failures
+	 *
+	 * @param project
+	 * @param owner
+	 * @param name
+	 * @return non-null repository id
+	 * @throws MojoExecutionException
+	 */
+	protected RepositoryId getRepository(MavenProject project, String owner, String name)
+			throws MojoExecutionException {
+		RepositoryId repository = RepositoryUtils.getRepository(project, owner, name);
+		if (repository == null)
+			throw new MojoExecutionException("No GitHub repository (owner and name) configured");
+		if (isDebug())
+			debug(MessageFormat.format("Using GitHub repository {0}", repository.generateId()));
+		return repository;
 	}
 
 	/**
@@ -309,25 +330,6 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 		return false;
 	}
 
-	/**
-	 * Get repository and throw a {@link MojoExecutionException} on failures
-	 *
-	 * @param project
-	 * @param owner
-	 * @param name
-	 * @return non-null repository id
-	 * @throws MojoExecutionException
-	 */
-	protected RepositoryId getRepository(MavenProject project, String owner, String name)
-			throws MojoExecutionException {
-		RepositoryId repository = RepositoryUtils.getRepository(project, owner, name);
-		if (repository == null)
-			throw new MojoExecutionException("No GitHub repository (owner and name) configured");
-		if (isDebug())
-			debug(MessageFormat.format("Using GitHub repository {0}", repository.generateId()));
-		return repository;
-	}
-
 	// static helpers
 
 	/**
@@ -359,6 +361,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * @param hostname
 	 * @return matching result. true: match nonProxy
 	 */
+	@VisibleForTesting
 	static boolean matchNonProxy(Proxy proxy, String hostname) {
 		String host = hostname;
 
@@ -425,8 +428,8 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 				if (proxy.isActive()) {
 					String proxyId = proxy.getId();
 					if (proxyId != null && !proxyId.isEmpty() && proxyId.equalsIgnoreCase(serverId)
-							&& ("http".equalsIgnoreCase(proxy.getProtocol())
-									|| "https".equalsIgnoreCase(proxy.getProtocol()))) {
+							&& (HTTP.equalsIgnoreCase(proxy.getProtocol())
+									|| HTTPS.equalsIgnoreCase(proxy.getProtocol()))) {
 						if (matchNonProxy(proxy, host)) {
 							return null;
 						} else {
@@ -439,8 +442,8 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 
 		// search active proxy
 		for (Proxy proxy : proxies) {
-			if (proxy.isActive() && ("http".equalsIgnoreCase(proxy.getProtocol())
-					|| "https".equalsIgnoreCase(proxy.getProtocol()))) {
+			if (proxy.isActive()
+					&& (HTTP.equalsIgnoreCase(proxy.getProtocol()) || HTTPS.equalsIgnoreCase(proxy.getProtocol()))) {
 				if (matchNonProxy(proxy, host))
 					return null;
 				else

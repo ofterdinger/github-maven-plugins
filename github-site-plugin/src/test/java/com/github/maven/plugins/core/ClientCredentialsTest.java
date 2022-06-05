@@ -29,7 +29,6 @@ import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.settings.Server;
 import org.apache.maven.settings.Settings;
 import org.codehaus.plexus.DefaultPlexusContainer;
@@ -87,7 +86,7 @@ public class ClientCredentialsTest {
 		}
 
 		@Override
-		public void execute() throws MojoExecutionException, MojoFailureException {
+		public void execute() {
 			// Intentionally left blank
 		}
 	}
@@ -95,10 +94,10 @@ public class ClientCredentialsTest {
 	/**
 	 * Test configured client with direct user name and password
 	 *
-	 * @throws Exception
+	 * @throws MojoExecutionException
 	 */
 	@Test
-	public void validUserNameAndPassword() throws Exception {
+	public void validUserNameAndPassword() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		GitHubClient client = mojo.createClient(null, "a", "b", null, null, null);
 		assertNotNull(client);
@@ -110,10 +109,10 @@ public class ClientCredentialsTest {
 	/**
 	 * Test configured client with no user name
 	 *
-	 * @throws Exception
+	 * @throws MojoExecutionException
 	 */
 	@Test(expected = MojoExecutionException.class)
-	public void noUserName() throws Exception {
+	public void noUserName() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		mojo.createClient(null, "a", null, null, null, null);
 	}
@@ -121,10 +120,10 @@ public class ClientCredentialsTest {
 	/**
 	 * Test configured client with no password
 	 *
-	 * @throws Exception
+	 * @throws MojoExecutionException
 	 */
 	@Test(expected = MojoExecutionException.class)
-	public void noPassword() throws Exception {
+	public void noPassword() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		mojo.createClient(null, null, "b", null, null, null);
 	}
@@ -132,10 +131,10 @@ public class ClientCredentialsTest {
 	/**
 	 * Test configured client with token
 	 *
-	 * @throws Exception
+	 * @throws MojoExecutionException
 	 */
 	@Test
-	public void validOAuth2Token() throws Exception {
+	public void validOAuth2Token() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		GitHubClient client = mojo.createClient(null, null, null, "token", null, null);
 		assertNotNull(client);
@@ -147,10 +146,10 @@ public class ClientCredentialsTest {
 	/**
 	 * Test configured client with token
 	 *
-	 * @throws Exception
+	 * @throws MojoExecutionException
 	 */
 	@Test
-	public void validOAuth2TokenWithUsername() throws Exception {
+	public void validOAuth2TokenWithUsername() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		GitHubClient client = mojo.createClient(null, "a", null, "token", null, null);
 		assertNotNull(client);
@@ -162,11 +161,11 @@ public class ClientCredentialsTest {
 	/**
 	 * Test configured client with server with username & password
 	 *
-	 * @throws Exception
+	 * @throws MojoExecutionException
 	 */
 	@Test
 	@Ignore
-	public void validServerUsernameAndPassword() throws Exception {
+	public void validServerUsernameAndPassword() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		Settings settings = new Settings();
 		Server server = new Server();
@@ -184,10 +183,10 @@ public class ClientCredentialsTest {
 	/**
 	 * Test configured client with server and no username & password
 	 *
-	 * @throws Exception
+	 * @throws MojoExecutionException
 	 */
 	@Test(expected = MojoExecutionException.class)
-	public void noServerUsernameAndPassword() throws Exception {
+	public void noServerUsernameAndPassword() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		Settings settings = new Settings();
 		Server server = new Server();
@@ -201,11 +200,11 @@ public class ClientCredentialsTest {
 	/**
 	 * Test configured client with server with OAuth 2 token
 	 *
-	 * @throws Exception
+	 * @throws MojoExecutionException
 	 */
 	@Test
 	@Ignore
-	public void validServerToken() throws Exception {
+	public void validServerToken() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		Settings settings = new Settings();
 		Server server = new Server();
@@ -222,10 +221,10 @@ public class ClientCredentialsTest {
 	/**
 	 * Test configured client with missing server
 	 *
-	 * @throws Exception
+	 * @throws MojoExecutionException
 	 */
 	@Test(expected = MojoExecutionException.class)
-	public void missingServerNoSettings() throws Exception {
+	public void missingServerNoSettings() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		mojo.createClient(null, null, null, null, "server", null);
 	}
@@ -233,10 +232,10 @@ public class ClientCredentialsTest {
 	/**
 	 * Test configured client with missing server
 	 *
-	 * @throws Exception
+	 * @throws MojoExecutionException
 	 */
 	@Test(expected = MojoExecutionException.class)
-	public void missingServerNullServers() throws Exception {
+	public void missingServerNullServers() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		Settings settings = new Settings();
 		mojo.createClient(null, null, null, null, "server", settings);
@@ -245,10 +244,10 @@ public class ClientCredentialsTest {
 	/**
 	 * Test configured client with missing server
 	 *
-	 * @throws Exception
+	 * @throws MojoExecutionException
 	 */
 	@Test(expected = MojoExecutionException.class)
-	public void missingServerEmptyServers() throws Exception {
+	public void missingServerEmptyServers() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		Settings settings = new Settings();
 		settings.setServers(Collections.<Server>emptyList());
@@ -258,10 +257,10 @@ public class ClientCredentialsTest {
 	/**
 	 * Test configured client with missing server
 	 *
-	 * @throws Exception
+	 * @throws MojoExecutionException
 	 */
 	@Test(expected = MojoExecutionException.class)
-	public void missingServerNoMatching() throws Exception {
+	public void missingServerNoMatching() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		Settings settings = new Settings();
 		Server server = new Server();
@@ -274,10 +273,10 @@ public class ClientCredentialsTest {
 	/**
 	 * Test configured client with no configuration
 	 *
-	 * @throws Exception
+	 * @throws MojoExecutionException
 	 */
 	@Test(expected = MojoExecutionException.class)
-	public void noConfiguration() throws Exception {
+	public void noConfiguration() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		mojo.createClient(null, null, null, null, null, null);
 	}
@@ -285,10 +284,10 @@ public class ClientCredentialsTest {
 	/**
 	 * Test configured client with no configuration
 	 *
-	 * @throws Exception
+	 * @throws MojoExecutionException
 	 */
 	@Test(expected = MojoExecutionException.class)
-	public void noConfigurationWithSettings() throws Exception {
+	public void noConfigurationWithSettings() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		Settings settings = new Settings();
 		mojo.createClient(null, null, null, null, null, settings);
