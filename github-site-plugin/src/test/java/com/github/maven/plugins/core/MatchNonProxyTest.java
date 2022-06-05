@@ -29,11 +29,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.settings.Proxy;
-import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.DefaultSettingsBuilderFactory;
 import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuilder;
@@ -65,13 +62,8 @@ public class MatchNonProxyTest {
 			return super.createClient(hostname);
 		}
 
-//		public GitHubClient createClient(String host, String userName, String password, String oauth2Token,
-//				String serverId, Settings settings, MavenSession session) throws MojoExecutionException {
-//			return super.createClient(host, userName, password, oauth2Token, serverId, settings);
-//		}
-
 		@Override
-		public void execute() throws MojoExecutionException, MojoFailureException {
+		public void execute() {
 			// Intentionally left blank
 		}
 	}

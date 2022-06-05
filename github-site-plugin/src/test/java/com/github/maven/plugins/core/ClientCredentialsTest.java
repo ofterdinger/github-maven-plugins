@@ -87,12 +87,6 @@ public class ClientCredentialsTest {
 		}
 
 		@Override
-		public GitHubClient createClient(String host, String userName, String password, String oauth2Token,
-				String serverId, Settings settings) throws MojoExecutionException {
-			return super.createClient(host, userName, password, oauth2Token, serverId, settings);
-		}
-
-		@Override
 		public void execute() throws MojoExecutionException, MojoFailureException {
 			// Intentionally left blank
 		}
