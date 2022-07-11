@@ -21,9 +21,9 @@
  */
 package com.github.maven.plugins.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -31,14 +31,14 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.settings.Settings;
 import org.eclipse.egit.github.core.client.GitHubClient;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests using client with custom hostname
  *
  * @author Kevin Sawicki (kevin@github.com)
  */
-public class CustomHostnameTest {
+class CustomHostnameTest {
 
 	private class TestMojo extends GitHubProjectMojo {
 
@@ -72,10 +72,9 @@ public class CustomHostnameTest {
 	 * Test custom hostname
 	 *
 	 * @throws MojoExecutionException
-	 *
 	 */
 	@Test
-	public void validHostname() throws MojoExecutionException {
+	void validHostname() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		GitHubClient client = mojo.createClient("h", "a", "b", null, null, null);
 		assertNotNull(client);
@@ -88,7 +87,7 @@ public class CustomHostnameTest {
 	 * @throws MojoExecutionException
 	 */
 	@Test
-	public void nullHostname() throws MojoExecutionException {
+	void nullHostname() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		GitHubClient client = mojo.createClient(null, "a", "b", null, null, null);
 		assertNotNull(client);
@@ -101,10 +100,11 @@ public class CustomHostnameTest {
 	 * @throws MojoExecutionException
 	 */
 	@Test
-	public void emptyHost() throws MojoExecutionException {
+	void emptyHost() throws MojoExecutionException {
 		TestMojo mojo = new TestMojo();
 		GitHubClient client = mojo.createClient("", "a", "b", null, null, null);
 		assertNotNull(client);
 		assertNull(mojo.host.get());
 	}
+
 }

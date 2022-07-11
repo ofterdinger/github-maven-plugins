@@ -22,15 +22,15 @@
 package com.github.maven.plugins.core;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 import org.apache.maven.model.Scm;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.egit.github.core.RepositoryId;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 /**
@@ -38,13 +38,13 @@ import org.mockito.Mockito;
  *
  * @author Kevin Sawicki (kevin@github.com)
  */
-public class RepositoryUtilsTest {
+class RepositoryUtilsTest {
 
 	/**
 	 * Test repository extraction from SCM anonymous Git URL
 	 */
 	@Test
-	public void extractFromAnonymousUrl() {
+	void extractFromAnonymousUrl() {
 		RepositoryId repo = RepositoryUtils.extractRepositoryFromScmUrl("scm:git:git://github.com/owner/project.git");
 		assertNotNull(repo);
 		assertEquals("owner", repo.getOwner());
@@ -56,7 +56,7 @@ public class RepositoryUtilsTest {
 	 * Test repository extraction from malformed URLs
 	 */
 	@Test
-	public void extractFromMalformedUrls() {
+	void extractFromMalformedUrls() {
 		assertNull(RepositoryUtils.extractRepositoryFromScmUrl("scm:git:git://github.com"));
 		assertNull(RepositoryUtils.extractRepositoryFromScmUrl("scm:git:git://github.com/"));
 		assertNull(RepositoryUtils.extractRepositoryFromScmUrl("scm:git:git@github.com"));
@@ -70,7 +70,7 @@ public class RepositoryUtilsTest {
 	 * Test repository extraction from SCM SSH Git URL
 	 */
 	@Test
-	public void extractFromSshUrl() {
+	void extractFromSshUrl() {
 		RepositoryId repo = RepositoryUtils.extractRepositoryFromScmUrl("scm:git:git@github.com:owner/project.git");
 		assertNotNull(repo);
 		assertEquals("owner", repo.getOwner());
@@ -79,14 +79,14 @@ public class RepositoryUtilsTest {
 	}
 
 	@Test
-	public void extractRepositoryFromEmptyProject() {
+	void extractRepositoryFromEmptyProject() {
 		MavenProject project = Mockito.mock(MavenProject.class);
 		RepositoryId repositoryId = RepositoryUtils.getRepository(project, null, null);
 		assertThat(repositoryId).isNull();
 	}
 
 	@Test
-	public void extractRepositoryFromEmptyProjectWithUrl() {
+	void extractRepositoryFromEmptyProjectWithUrl() {
 		MavenProject project = Mockito.mock(MavenProject.class);
 		when(project.getUrl()).thenReturn("https://github.com/nanoko-project/coffee-mill-maven-plugin");
 		RepositoryId repositoryId = RepositoryUtils.getRepository(project, null, null);
@@ -96,7 +96,7 @@ public class RepositoryUtilsTest {
 	}
 
 	@Test
-	public void extractRepositoryFromEmptyProjectWithSCM() {
+	void extractRepositoryFromEmptyProjectWithSCM() {
 		Scm scm = Mockito.mock(Scm.class);
 		when(scm.getUrl()).thenReturn("https://github.com/nanoko-project/coffee-mill-maven-plugin");
 		MavenProject project = Mockito.mock(MavenProject.class);
