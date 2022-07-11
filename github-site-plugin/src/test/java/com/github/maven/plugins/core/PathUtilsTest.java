@@ -21,29 +21,29 @@
  */
 package com.github.maven.plugins.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests of {@link PathUtils}
  *
  * @author Kevin Sawicki (kevin@github.com)
  */
-public class PathUtilsTest {
+class PathUtilsTest {
 
 	/**
 	 * Create temporary directory to use in a test
 	 *
 	 * @return directory that exists
 	 */
-	public static final File createDirectory() {
+	static final File createDirectory() {
 		String tmpDir = System.getProperty("java.io.tmpdir");
 		assertNotNull(tmpDir);
 		File dir = new File(tmpDir, "test" + System.nanoTime());
@@ -59,7 +59,7 @@ public class PathUtilsTest {
 	 * @throws IOException
 	 */
 	@Test
-	public void singleInclude() throws IOException {
+	void singleInclude() throws IOException {
 		File include = File.createTempFile("include", ".txt", createDirectory());
 		String[] paths = PathUtils.getMatchingPaths(new String[] { include.getName() }, null, include.getParent());
 		assertNotNull(paths);
@@ -73,7 +73,7 @@ public class PathUtilsTest {
 	 * @throws IOException
 	 */
 	@Test
-	public void singleIncludeSingleExclude() throws IOException {
+	void singleIncludeSingleExclude() throws IOException {
 		File dir = createDirectory();
 		File include = File.createTempFile("include", ".filetomatch", dir);
 		File.createTempFile("neutral", ".notmatch", dir);
@@ -91,7 +91,7 @@ public class PathUtilsTest {
 	 * @throws IOException
 	 */
 	@Test
-	public void singleExlude() throws IOException {
+	void singleExlude() throws IOException {
 		File dir = createDirectory();
 		File include = File.createTempFile("include", ".filetomatch", dir);
 		File exclude = File.createTempFile("exlude", ".filetomatch", dir);
@@ -100,4 +100,5 @@ public class PathUtilsTest {
 		assertEquals(1, paths.length);
 		assertEquals(include.getName(), paths[0]);
 	}
+
 }

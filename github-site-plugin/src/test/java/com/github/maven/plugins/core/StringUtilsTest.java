@@ -21,24 +21,24 @@
  */
 package com.github.maven.plugins.core;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests of {@link StringUtils}
  *
  * @author Kevin Sawicki (kevin@github.com)
  */
-public class StringUtilsTest {
+class StringUtilsTest {
 
 	/**
 	 * Tests of {@link StringUtils#isEmpty(String...)}
 	 */
 	@Test
-	public void isEmpty() {
+	void isEmpty() {
 		assertTrue(StringUtils.isEmpty((String[]) null));
 		assertTrue(StringUtils.isEmpty(new String[0]));
 		assertTrue(StringUtils.isEmpty((String) null));
@@ -52,11 +52,12 @@ public class StringUtilsTest {
 	 * Tests of {@link StringUtils#removeEmpties(String...)}
 	 */
 	@Test
-	public void removeEmpties() {
+	void removeEmpties() {
 		assertArrayEquals(new String[0], StringUtils.removeEmpties((String[]) null));
 		assertArrayEquals(new String[0], StringUtils.removeEmpties((String) null));
 		assertArrayEquals(new String[0], StringUtils.removeEmpties(""));
 		assertArrayEquals(new String[] { "content" }, StringUtils.removeEmpties("", "content"));
 		assertArrayEquals(new String[] { "content" }, StringUtils.removeEmpties(null, "content"));
 	}
+
 }

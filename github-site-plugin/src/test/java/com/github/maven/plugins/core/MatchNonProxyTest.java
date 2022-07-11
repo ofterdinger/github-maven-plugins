@@ -21,10 +21,10 @@
  */
 package com.github.maven.plugins.core;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
@@ -38,14 +38,14 @@ import org.apache.maven.settings.building.SettingsBuildingException;
 import org.apache.maven.settings.building.SettingsBuildingResult;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.client.IGitHubConstants;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * NonProxy tests for the various configuration
  *
  * @author Kiyofumi Kondoh
  */
-public class MatchNonProxyTest {
+class MatchNonProxyTest {
 
 	private class TestMojo extends GitHubProjectMojo {
 
@@ -71,10 +71,11 @@ public class MatchNonProxyTest {
 
 	/**
 	 * matchNonProxy tests with single nonProxyHosts
+	 *
 	 * @throws SettingsBuildingException
 	 */
 	@Test
-	public void matchNonProxyWithSingle_nonPorxyHosts() throws SettingsBuildingException  {
+	void matchNonProxyWithSingle_nonPorxyHosts() throws SettingsBuildingException {
 		SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
 		assertNotNull(builder);
 
@@ -119,10 +120,11 @@ public class MatchNonProxyTest {
 
 	/**
 	 * matchNonProxy tests with multiple nonProxyHosts
+	 *
 	 * @throws SettingsBuildingException
 	 */
 	@Test
-	public void matchNonProxyWithMultiple_nonPorxyHosts() throws SettingsBuildingException  {
+	void matchNonProxyWithMultiple_nonPorxyHosts() throws SettingsBuildingException {
 		SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
 		assertNotNull(builder);
 
@@ -171,7 +173,7 @@ public class MatchNonProxyTest {
 	 * @throws SettingsBuildingException
 	 */
 	@Test
-	public void matchNonProxyWithWildcard_nonPorxyHosts() throws SettingsBuildingException  {
+	void matchNonProxyWithWildcard_nonPorxyHosts() throws SettingsBuildingException {
 		SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
 		assertNotNull(builder);
 
@@ -218,7 +220,7 @@ public class MatchNonProxyTest {
 	 * getProxy tests with single nonProxyHosts
 	 */
 	@Test
-	public void getProxyWithSingle_nonProxyHosts() throws Exception {
+	void getProxyWithSingle_nonProxyHosts() throws Exception {
 		SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
 		assertNotNull(builder);
 
@@ -245,10 +247,11 @@ public class MatchNonProxyTest {
 
 	/**
 	 * getProxy tests with nonProxyHosts, which have same id
+	 *
 	 * @throws SettingsBuildingException
 	 */
 	@Test
-	public void getProxyIntraWithSameId() throws SettingsBuildingException  {
+	void getProxyIntraWithSameId() throws SettingsBuildingException {
 		SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
 		assertNotNull(builder);
 
@@ -283,7 +286,7 @@ public class MatchNonProxyTest {
 	 * @throws SettingsBuildingException
 	 */
 	@Test
-	public void getProxyIntraNoSameId() throws SettingsBuildingException  {
+	void getProxyIntraNoSameId() throws SettingsBuildingException {
 		SettingsBuilder builder = new DefaultSettingsBuilderFactory().newInstance();
 		assertNotNull(builder);
 
