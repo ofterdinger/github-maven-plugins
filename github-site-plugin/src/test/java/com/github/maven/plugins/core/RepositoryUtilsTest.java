@@ -21,7 +21,6 @@
  */
 package com.github.maven.plugins.core;
 
-import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -82,7 +81,7 @@ class RepositoryUtilsTest {
 	void extractRepositoryFromEmptyProject() {
 		MavenProject project = Mockito.mock(MavenProject.class);
 		RepositoryId repositoryId = RepositoryUtils.getRepository(project, null, null);
-		assertThat(repositoryId).isNull();
+		assertNull(repositoryId);
 	}
 
 	@Test
@@ -90,9 +89,9 @@ class RepositoryUtilsTest {
 		MavenProject project = Mockito.mock(MavenProject.class);
 		when(project.getUrl()).thenReturn("https://github.com/nanoko-project/coffee-mill-maven-plugin");
 		RepositoryId repositoryId = RepositoryUtils.getRepository(project, null, null);
-		assertThat(repositoryId).isNotNull();
-		assertThat(repositoryId.getName()).isEqualTo("coffee-mill-maven-plugin");
-		assertThat(repositoryId.getOwner()).isEqualTo("nanoko-project");
+		assertNotNull(repositoryId);
+		assertEquals("coffee-mill-maven-plugin", repositoryId.getName());
+		assertEquals("nanoko-project", repositoryId.getOwner());
 	}
 
 	@Test
@@ -103,9 +102,9 @@ class RepositoryUtilsTest {
 		when(project.getUrl()).thenReturn("must not be used");
 		when(project.getScm()).thenReturn(scm);
 		RepositoryId repositoryId = RepositoryUtils.getRepository(project, null, null);
-		assertThat(repositoryId).isNotNull();
-		assertThat(repositoryId.getName()).isEqualTo("coffee-mill-maven-plugin");
-		assertThat(repositoryId.getOwner()).isEqualTo("nanoko-project");
+		assertNotNull(repositoryId);
+		assertEquals("coffee-mill-maven-plugin", repositoryId.getName());
+		assertEquals("nanoko-project", repositoryId.getOwner());
 	}
 
 }
