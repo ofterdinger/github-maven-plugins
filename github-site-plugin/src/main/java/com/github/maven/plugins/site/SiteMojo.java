@@ -252,12 +252,12 @@ public class SiteMojo extends GitHubProjectMojo {
 		}
 	}
 
-	private void doExecute(RepositoryId repository, String[] paths) throws MojoExecutionException {
+	private void doExecute(RepositoryId repository, String[] subpaths) throws MojoExecutionException {
 		DataService service = new DataService(
 				createClient(this.host, this.userName, this.password, this.oauth2Token, this.server, this.settings));
 
 		// Write blobs and build tree entries
-		List<TreeEntry> entries = new ArrayList<>(paths.length);
+		List<TreeEntry> entries = new ArrayList<>(subpaths.length);
 		String prefix = this.path != null ? this.path : "";
 		if (prefix.length() > 0 && !prefix.endsWith("/")) {
 			prefix += "/";
@@ -265,23 +265,23 @@ public class SiteMojo extends GitHubProjectMojo {
 
 		// Convert separator to forward slash '/'
 		if ('\\' == File.separatorChar) {
-			for (int i = 0; i < paths.length; i++) {
-				paths[i] = paths[i].replace('\\', '/');
+			for (int i = 0; i < subpaths.length; i++) {
+				subpaths[i] = subpaths[i].replace('\\', '/');
 			}
 		}
 
 		boolean createNoJekyll = this.noJekyll;
 
-		for (String path : paths) {
+		for (String subpath : subpaths) {
 			TreeEntry entry = new TreeEntry();
-			entry.setPath(prefix + path);
+			entry.setPath(prefix + subpath);
 			// Only create a .nojekyll file if it doesn't already exist
 			if (createNoJekyll && NO_JEKYLL_FILE.equals(entry.getPath())) {
 				createNoJekyll = false;
 			}
 			entry.setType(TYPE_BLOB);
 			entry.setMode(MODE_BLOB);
-			entry.setSha(createBlob(service, repository, path));
+			entry.setSha(createBlob(service, repository, subpath));
 			entries.add(entry);
 		}
 
@@ -295,13 +295,14 @@ public class SiteMojo extends GitHubProjectMojo {
 				debug("Creating empty .nojekyll blob at root of tree");
 			}
 
-			if (!this.dryRun)
+			if (!this.dryRun) {
 				try {
 					entry.setSha(
 							service.createBlob(repository, new Blob().setEncoding(ENCODING_BASE64).setContent("")));
 				} catch (IOException e) {
 					throw new MojoExecutionException("Error creating .nojekyll empty blob: " + e.getMessage(), e);
 				}
+			}
 			entries.add(entry);
 		}
 
@@ -326,21 +327,24 @@ public class SiteMojo extends GitHubProjectMojo {
 		Tree tree;
 		try {
 			int size = entries.size();
-			if (size != 1)
+			if (size != 1) {
 				info(MessageFormat.format("Creating tree with {0} blob entries", size));
-			else
+			} else {
 				info("Creating tree with 1 blob entry");
+			}
 			String baseTree = null;
 			if (this.merge && ref != null) {
 				Tree currentTree = service.getCommit(repository, ref.getObject().getSha()).getTree();
-				if (currentTree != null)
+				if (currentTree != null) {
 					baseTree = currentTree.getSha();
+				}
 				info(MessageFormat.format("Merging with tree {0}", baseTree));
 			}
-			if (!this.dryRun)
+			if (!this.dryRun) {
 				tree = service.createTree(repository, entries, baseTree);
-			else
+			} else {
 				tree = new Tree();
+			}
 		} catch (IOException e) {
 			throw new MojoExecutionException("Error creating tree: " + e.getMessage(), e);
 		}
@@ -366,8 +370,9 @@ public class SiteMojo extends GitHubProjectMojo {
 		}
 
 		// Set parent commit SHA-1 if reference exists
-		if (ref != null)
+		if (ref != null) {
 			commit.setParents(Collections.singletonList(new Commit().setSha(ref.getObject().getSha())));
+		}
 
 		Commit created;
 		try {
@@ -415,12 +420,13 @@ public class SiteMojo extends GitHubProjectMojo {
 	 *
 	 * @param service
 	 * @param repository
-	 * @param path
+	 * @param subpath
 	 * @return blob SHA-1
 	 * @throws MojoExecutionException
 	 */
-	private String createBlob(DataService service, RepositoryId repository, String path) throws MojoExecutionException {
-		File file = new File(this.outputDirectory, path);
+	private String createBlob(DataService service, RepositoryId repository, String subpath)
+			throws MojoExecutionException {
+		File file = new File(this.outputDirectory, subpath);
 		long length = file.length();
 		int size = length > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) length;
 		ByteArrayOutputStream output = new ByteArrayOutputStream(size);
@@ -445,9 +451,8 @@ public class SiteMojo extends GitHubProjectMojo {
 			}
 			if (!this.dryRun) {
 				return service.createBlob(repository, blob);
-			} else {
-				return null;
 			}
+			return null;
 		} catch (IOException e) {
 			throw new MojoExecutionException("Error creating blob: " + e.getMessage(), e);
 		}
