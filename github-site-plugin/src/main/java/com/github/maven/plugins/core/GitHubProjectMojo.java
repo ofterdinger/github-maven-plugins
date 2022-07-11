@@ -166,12 +166,13 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 			java.net.Proxy javaProxy = new java.net.Proxy(java.net.Proxy.Type.HTTP,
 					new InetSocketAddress(proxy.getHost(), proxy.getPort()));
 			if (isDebug()) {
-				debug(MessageFormat.format("Found Proxy {0}:{1}", proxy.getHost(), proxy.getPort()));
+				debug(MessageFormat.format("Found Proxy {0}:{1}", proxy.getHost(), Integer.valueOf(proxy.getPort())));
 			}
 			if (client instanceof GitHubClientEgit) {
 				GitHubClientEgit clientEgit = (GitHubClientEgit) client;
-				if (isDebug())
+				if (isDebug()) {
 					debug(MessageFormat.format("Use Proxy for Egit {0}", javaProxy));
+				}
 				clientEgit.setProxy(javaProxy);
 			}
 		}
@@ -179,9 +180,8 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 		if (configureUsernamePassword(client, userName, password) || configureOAuth2Token(client, oauth2Token)
 				|| configureServerCredentials(client, serverId, settings)) {
 			return client;
-		} else {
-			throw new MojoExecutionException("No authentication credentials configured");
 		}
+		throw new MojoExecutionException("No authentication credentials configured");
 	}
 
 	/**
@@ -196,10 +196,12 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	protected RepositoryId getRepository(MavenProject project, String owner, String name)
 			throws MojoExecutionException {
 		RepositoryId repository = RepositoryUtils.getRepository(project, owner, name);
-		if (repository == null)
+		if (repository == null) {
 			throw new MojoExecutionException("No GitHub repository (owner and name) configured");
-		if (isDebug())
+		}
+		if (isDebug()) {
 			debug(MessageFormat.format("Using GitHub repository {0}", repository.generateId()));
+		}
 		return repository;
 	}
 
@@ -213,8 +215,9 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * @throws MojoExecutionException
 	 */
 	GitHubClient createClient(String hostname) throws MojoExecutionException {
-		if (!hostname.contains("://"))
+		if (!hostname.contains("://")) {
 			return new RateLimitedGitHubClient(hostname);
+		}
 		try {
 			URL hostUrl = new URL(hostname);
 			return new RateLimitedGitHubClient(hostUrl.getHost(), hostUrl.getPort(), hostUrl.getProtocol());
@@ -340,8 +343,9 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 	 * @return server or null if none matching
 	 */
 	private static Server getServer(Settings settings, String serverId) {
-		if (settings == null)
+		if (settings == null) {
 			return null;
+		}
 		List<Server> servers = settings.getServers();
 		if (servers == null || servers.isEmpty()) {
 			return null;
@@ -432,9 +436,8 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 									|| HTTPS.equalsIgnoreCase(proxy.getProtocol()))) {
 						if (matchNonProxy(proxy, host)) {
 							return null;
-						} else {
-							return proxy;
 						}
+						return proxy;
 					}
 				}
 			}
@@ -444,10 +447,10 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 		for (Proxy proxy : proxies) {
 			if (proxy.isActive()
 					&& (HTTP.equalsIgnoreCase(proxy.getProtocol()) || HTTPS.equalsIgnoreCase(proxy.getProtocol()))) {
-				if (matchNonProxy(proxy, host))
+				if (matchNonProxy(proxy, host)) {
 					return null;
-				else
-					return proxy;
+				}
+				return proxy;
 			}
 		}
 		return null;

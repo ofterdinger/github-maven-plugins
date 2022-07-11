@@ -46,8 +46,9 @@ public class StringUtils {
 			return true;
 		}
 		for (String value : values) {
-			if (value == null || value.length() == 0)
+			if (value == null || value.length() == 0) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -64,8 +65,9 @@ public class StringUtils {
 		}
 		List<String> validValues = new ArrayList<>();
 		for (String value : values) {
-			if (value != null && value.length() > 0)
+			if (value != null && value.length() > 0) {
 				validValues.add(value);
+			}
 		}
 		return validValues.toArray(new String[validValues.size()]);
 	}
