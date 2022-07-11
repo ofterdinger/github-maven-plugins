@@ -68,7 +68,7 @@
   </distributionManagement>
 
   <properties>
-    <maven.version>3.8.1</maven.version>
+    <maven.version>3.8.6</maven.version>
 
     <!-- https://search.maven.org/artifact/org.junit.jupiter/junit-jupiter-api -->
     <junit.version>5.8.2</junit.version>
