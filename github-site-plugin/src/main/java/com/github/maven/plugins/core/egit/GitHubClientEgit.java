@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
+
 import org.eclipse.egit.github.core.client.GitHubClient;
 
 /**
@@ -59,9 +60,8 @@ public class GitHubClientEgit extends GitHubClient {
 		URL url = new URL(createUri(uri));
 		if (null == this.proxy) {
 			return (HttpURLConnection) url.openConnection();
-		} else {
-			return (HttpURLConnection) url.openConnection(this.proxy);
 		}
+		return (HttpURLConnection) url.openConnection(this.proxy);
 	}
 
 }
