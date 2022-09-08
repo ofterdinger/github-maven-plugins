@@ -74,7 +74,7 @@
     <junit.version>5.8.2</junit.version>
 
     <!-- https://search.maven.org/artifact/org.mockito/mockito-core -->
-    <mockito.version>4.6.1</mockito.version>
+    <mockito.version>4.8.0</mockito.version>
   </properties>
 
   <build>
