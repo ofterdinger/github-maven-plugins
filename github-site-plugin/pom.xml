@@ -4,7 +4,7 @@
   <parent>
     <groupId>de.ofterdinger.maven.plugins</groupId>
     <artifactId>github-maven-plugins-parent</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>site-maven-plugin</artifactId>
@@ -75,7 +75,11 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-reload4j</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
