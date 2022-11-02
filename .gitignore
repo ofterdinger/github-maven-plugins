@@ -6,6 +6,7 @@ target
 # Eclipse
 .project
 .classpath
+.factorypath
 .settings
 
 pom.xml.versionsBackup
