@@ -17,7 +17,7 @@ Configuring the destination directory
 -------------------------------------
 
 The plugin can be configured to upload the site to a specific directory, using the `path` parameter:
-
+```xml
     	<plugin>
     		<groupId>${project.groupId}</groupId>
             <artifactId>${project.artifactId}</artifactId>
@@ -39,7 +39,7 @@ The plugin can be configured to upload the site to a specific directory, using t
     			</execution>
     		</executions>
     	</plugin>
-
+```
 As a consequence, your site is published on:
 
     http://owner.github.io/project/site-plugin
@@ -54,7 +54,7 @@ By using Maven profile, you can change the site destination. For example, the sn
 `snapshot`, while the released version are deployed to `\${project.version}`.
 
 Configure the `path` parameter too `site.path`:
-
+```xml
     <plugin>
     		<groupId>${project.groupId}</groupId>
             <artifactId>${project.artifactId}</artifactId>
@@ -76,16 +76,16 @@ Configure the `path` parameter too `site.path`:
     			</execution>
     		</executions>
     	</plugin>
-
+```
 Define the properties in your pom, with the default (snapshot) value:
-
+```xml
     <properties>
         <site.path>snapshot</site.path>
     </properties>
-
+```
 
 Configure the release profile as follows:
-
+```xml
     <profiles>
         <profile>
             <id>release</id>
@@ -94,9 +94,9 @@ Configure the release profile as follows:
             </properties>
         </profile>
     </profiles>
-
+```
 Don't forget to configure the `maven-release-plugin` to enable the release profile when performing your release:
-
+```xml
     <plugin>
         <artifactId>maven-release-plugin</artifactId>
         <version>2.2.1</version>
@@ -105,3 +105,4 @@ Don't forget to configure the `maven-release-plugin` to enable the release profi
             <goals>deploy site site-deploy</goals>
         </configuration>
     </plugin>
+xml

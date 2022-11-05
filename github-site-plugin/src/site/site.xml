@@ -30,7 +30,7 @@
 
     <menu name="Github Site Plugin">
       <item name="About" href="index.html" />
-      <item name="Configuration" href="site-mojo.html" />
+      <!--item name="Configuration" href="site-mojo.html" /-->
       <item name="Quickstart" href="quickstart.html" />
     </menu>
 
