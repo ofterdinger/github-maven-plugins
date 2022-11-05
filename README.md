@@ -1,5 +1,5 @@
 
-# GitHub Maven Plugins [![Build Status](https://travis-ci.org/github/maven-plugins.svg)](https://travis-ci.org/github/maven-plugins)
+# GitHub Maven Plugins [![PR Voter build](https://github.com/ofterdinger/github-maven-plugins/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/ofterdinger/github-maven-plugins/actions/workflows/maven.yml)
 
 Collection of [Maven](http://maven.apache.org/) plugins that integrate with GitHub.
 These plugins are built on top of [API v3](http://developer.github.com/) through the
