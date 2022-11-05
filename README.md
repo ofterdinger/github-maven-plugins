@@ -1,29 +1,11 @@
 
-This fork of includes code that makes uploads go faster. To use it, clone this repo, run `mvn clean install` and use version 0.13.0.OSS-M1 instead of version 0.12 of `site-maven-plugin`.
-
-```xml
-<pluginRepository>
-  <id>oss-github-maven-plugins</id>
-  <url>https://raw.github.com/home1-oss/maven-plugins/mvn-repo</url>
-  <name>Forked github-maven-plugins that upload faster</name>
-  <layout>default</layout>
-  <snapshots>
-    <enabled>true</enabled>
-  </snapshots>
-  <releases>
-    <enabled>true</enabled>
-  </releases>
-</pluginRepository>
-```
-
-
 # GitHub Maven Plugins [![Build Status](https://travis-ci.org/github/maven-plugins.svg)](https://travis-ci.org/github/maven-plugins)
 
 Collection of [Maven](http://maven.apache.org/) plugins that integrate with GitHub.
 These plugins are built on top of [API v3](http://developer.github.com/) through the
 [GitHub Java library](https://github.com/eclipse/egit-github/tree/master/org.eclipse.egit.github.core).
 
-Released builds are available from [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Ccom.github.github).
+Released builds are available from [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cde.ofterdinger.maven.plugins).
 
 ## Core Configuration
 
@@ -147,7 +129,7 @@ prefix of `ghSite`.
     <plugin>
       <groupId>de.ofterdinger.maven.plugins</groupId>
       <artifactId>site-maven-plugin</artifactId>
-      <version>0.1.0</version>
+      <version>0.1.2</version>
       <configuration>
         <message>Creating site for ${project.version}</message>
       </configuration>
