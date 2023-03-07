@@ -83,7 +83,7 @@
     <mockito.version>5.1.1</mockito.version>
 
     <!-- https://search.maven.org/artifact/org.codehaus.plexus/plexus-utils -->
-    <plexus-utils.version>3.5.0</plexus-utils.version>
+    <plexus-utils.version>3.5.1</plexus-utils.version>
 
     <!-- Maven plugins versions-->
     <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
