@@ -80,7 +80,7 @@
     <junit.version>5.9.2</junit.version>
 
     <!-- https://search.maven.org/artifact/org.mockito/mockito-core -->
-    <mockito.version>5.1.1</mockito.version>
+    <mockito.version>5.2.0</mockito.version>
 
     <!-- https://search.maven.org/artifact/org.codehaus.plexus/plexus-utils -->
     <plexus-utils.version>3.5.1</plexus-utils.version>
