@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>de.ofterdinger.maven.plugins</groupId>
@@ -70,6 +71,9 @@
     <!-- https://search.maven.org/artifact/org.apache.commons/commons-lang3 -->
     <commons-lang3.version>3.12.0</commons-lang3.version>
 
+    <!-- https://search.maven.org/artifact/org.apache.maven.doxia/doxia-module-markdown -->
+    <doxia-module-markdown.version>2.0.0-M6</doxia-module-markdown.version>
+
     <!-- https://search.maven.org/artifact/com.google.guava/guava -->
     <guava.version>31.1-jre</guava.version>
 
@@ -84,6 +88,12 @@
 
     <!-- https://search.maven.org/artifact/org.codehaus.plexus/plexus-utils -->
     <plexus-utils.version>3.5.1</plexus-utils.version>
+
+    <!-- https://repo.eclipse.org/content/repositories/egit-releases/org/eclipse/mylyn/github/org.eclipse.egit.github.core -->
+    <org.eclipse.egit.github.core.version>6.1.0.202203080745-r</org.eclipse.egit.github.core.version>
+
+    <!-- https://search.maven.org/artifact/org.slf4j/slf4j-reload4j -->
+    <slf4j-reload4j.version>2.0.7</slf4j-reload4j.version>
 
     <!-- Maven plugins versions-->
     <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
@@ -199,7 +209,7 @@
           <dependency>
             <groupId>org.apache.maven.doxia</groupId>
             <artifactId>doxia-module-markdown</artifactId>
-            <version>2.0.0-M6</version>
+            <version>${doxia-module-markdown.version}</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -248,42 +258,6 @@
         </plugins>
       </build>
     </profile>
-    <!--
-        <![CDATA[
-        Usage:
-        1. set environment variable GITHUB_GIT_SERVICE_TOKEN
-
-        2. To publish a release
-           Following actions can be automated using the maven-release-plugin
-             1. Commit any modifications
-             2. Remove the -SNAPSHOT from the version number
-             3. Deploy the module to the release-repository
-             4. Tag the source code with the version number
-             5. Increment the version number and append -SNAPSHOT
-            see: https://dzone.com/articles/configuring-the-maven-release-plugin-to-skip-tests
-
-              mvn -DpreparationGoals=compile -Darguments="" release:prepare
-              mvn -Darguments="-DskipTests" release:perform
-
-            Delete tag on release failed, see: https://www.abeautifulsite.net/how-to-delete-a-tag-on-github
-            Example:
-              git tag -d ${tag}
-              git push origin :${tag}
-        3. To publish a snapshot
-            mvn -Dmaven.test.skip=true clean package deploy
-
-        Note:
-            Create a empty mvn-repo branch on github
-            git checkout \-\-orphan mvn-repo
-            git rm -rf .
-            git commit \-\-allow-empty -m "root commit"
-            git push origin mvn-repo
-
-            Clean existing gh-pages branch
-            git push origin \-\-delete <branch_name>
-            git branch -d <branch_name>
-        ]]>
-        -->
   </profiles>
 
   <dependencyManagement>
@@ -307,7 +281,7 @@
       <dependency>
         <groupId>org.eclipse.mylyn.github</groupId>
         <artifactId>org.eclipse.egit.github.core</artifactId>
-        <version>6.1.0.202203080745-r</version>
+        <version>${org.eclipse.egit.github.core.version}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
@@ -339,7 +313,7 @@
       </dependency>
 
       <!-- =========== -->
-      <!-- Testting    -->
+      <!-- Testting -->
       <!-- =========== -->
       <dependency>
         <groupId>org.junit.jupiter</groupId>
@@ -355,7 +329,7 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-reload4j</artifactId>
-        <version>2.0.7</version>
+        <version>${slf4j-reload4j.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
