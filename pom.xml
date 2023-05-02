@@ -80,7 +80,7 @@
     <gson.version>2.10.1</gson.version>
 
     <!-- https://search.maven.org/artifact/org.junit.jupiter/junit-jupiter-api -->
-    <junit.version>5.9.2</junit.version>
+    <junit.version>5.9.3</junit.version>
 
     <!-- https://search.maven.org/artifact/org.mockito/mockito-core -->
     <mockito.version>5.3.1</mockito.version>
