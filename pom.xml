@@ -105,7 +105,7 @@
     <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
     <maven-plugin-annotations.version>3.9.0</maven-plugin-annotations.version>
     <maven-plugin-plugin.version>3.9.0</maven-plugin-plugin.version>
-    <maven-project-info-reports-plugin.version>3.4.3</maven-project-info-reports-plugin.version>
+    <maven-project-info-reports-plugin.version>3.4.5</maven-project-info-reports-plugin.version>
     <maven-release-plugin.version>3.0.0</maven-release-plugin.version>
     <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
     <maven-site-plugin.version>4.0.0-M8</maven-site-plugin.version>
