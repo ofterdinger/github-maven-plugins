@@ -287,6 +287,11 @@
         <artifactId>plexus-utils</artifactId>
         <version>${plexus-utils.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-xml</artifactId>
+        <version>${plexus-utils.version}</version>
+      </dependency>
 
       <!-- =========== -->
       <!-- Google libs -->
