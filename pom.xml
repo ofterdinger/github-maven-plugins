@@ -86,7 +86,7 @@
     <mockito.version>5.3.1</mockito.version>
 
     <!-- https://search.maven.org/artifact/org.codehaus.plexus/plexus-utils -->
-    <plexus-utils.version>3.5.1</plexus-utils.version>
+    <plexus-utils.version>4.0.0</plexus-utils.version>
 
     <!-- https://repo.eclipse.org/content/repositories/egit-releases/org/eclipse/mylyn/github/org.eclipse.egit.github.core -->
     <org.eclipse.egit.github.core.version>6.1.0.202203080745-r</org.eclipse.egit.github.core.version>
@@ -285,6 +285,11 @@
       <dependency>
         <groupId>org.codehaus.plexus</groupId>
         <artifactId>plexus-utils</artifactId>
+        <version>${plexus-utils.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-xml</artifactId>
         <version>${plexus-utils.version}</version>
       </dependency>
 
