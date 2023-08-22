@@ -68,7 +68,7 @@
     <maven.version>3.9.3</maven.version>
 
     <!-- https://search.maven.org/artifact/org.apache.commons/commons-lang3 -->
-    <commons-lang3.version>3.12.0</commons-lang3.version>
+    <commons-lang3.version>3.13.0</commons-lang3.version>
 
     <!-- https://search.maven.org/artifact/org.apache.maven.doxia/doxia-module-markdown -->
     <doxia-module-markdown.version>2.0.0-M7</doxia-module-markdown.version>
@@ -83,7 +83,7 @@
     <junit.version>5.9.3</junit.version>
 
     <!-- https://search.maven.org/artifact/org.mockito/mockito-core -->
-    <mockito.version>5.4.0</mockito.version>
+    <mockito.version>5.5.0</mockito.version>
 
     <!-- https://search.maven.org/artifact/org.codehaus.plexus/plexus-utils -->
     <plexus-utils.version>4.0.0</plexus-utils.version>
