@@ -4,7 +4,7 @@
 
   <groupId>de.ofterdinger.maven.plugins</groupId>
   <artifactId>github-maven-plugins-parent</artifactId>
-  <version>0.1.5</version>
+  <version>0.1.6-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
@@ -27,7 +27,7 @@
     <url>https://github.com/ofterdinger/github-maven-plugins</url>
     <connection>scm:git:git://github.com/ofterdinger/github-maven-plugins.git</connection>
     <developerConnection>scm:git:git@github.com:ofterdinger/github-maven-plugins.git</developerConnection>
-    <tag>v0.1.5</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <developers>
