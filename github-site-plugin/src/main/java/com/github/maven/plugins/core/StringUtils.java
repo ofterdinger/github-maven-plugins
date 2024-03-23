@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author Kevin Sawicki (kevin@github.com)
  */
-public class StringUtils {
+public final class StringUtils {
 
 	private StringUtils() {
 		// avoid instances

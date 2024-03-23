@@ -240,15 +240,15 @@ public class SiteMojo extends GitHubProjectMojo {
 		}
 
 		// Push updates in multiple passes
-		final int CAPACITY = 500;
+		final int capacity = 500;
 		int start = 0;
-		int end = Math.min(CAPACITY, paths.length);
+		int end = Math.min(capacity, paths.length);
 		while (start < paths.length) {
 			info("Sending batch: [" + start + " - " + end + ")");
 			String[] subpaths = copyOfRange(paths, start, end);
 			doExecute(repository, subpaths);
 			start = end;
-			end = (end + CAPACITY < paths.length ? end + CAPACITY : paths.length);
+			end = end + capacity < paths.length ? end + capacity : paths.length;
 		}
 	}
 
@@ -431,7 +431,7 @@ public class SiteMojo extends GitHubProjectMojo {
 		int size = length > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) length;
 		ByteArrayOutputStream output = new ByteArrayOutputStream(size);
 
-		try (FileInputStream stream = new FileInputStream(file);) {
+		try (FileInputStream stream = new FileInputStream(file)) {
 			byte[] buffer = new byte[8192];
 			int read;
 			while ((read = stream.read(buffer)) != -1) {

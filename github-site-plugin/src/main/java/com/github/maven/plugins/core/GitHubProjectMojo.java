@@ -168,8 +168,7 @@ public abstract class GitHubProjectMojo extends AbstractMojo implements Contextu
 			if (isDebug()) {
 				debug(MessageFormat.format("Found Proxy {0}:{1}", proxy.getHost(), Integer.valueOf(proxy.getPort())));
 			}
-			if (client instanceof GitHubClientEgit) {
-				GitHubClientEgit clientEgit = (GitHubClientEgit) client;
+			if (client instanceof GitHubClientEgit clientEgit) {
 				if (isDebug()) {
 					debug(MessageFormat.format("Use Proxy for Egit {0}", javaProxy));
 				}

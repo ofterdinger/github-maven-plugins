@@ -43,7 +43,7 @@ class PathUtilsTest {
 	 *
 	 * @return directory that exists
 	 */
-	static final File createDirectory() {
+	static File createDirectory() {
 		String tmpDir = System.getProperty("java.io.tmpdir");
 		assertNotNull(tmpDir);
 		File dir = new File(tmpDir, "test" + System.nanoTime());

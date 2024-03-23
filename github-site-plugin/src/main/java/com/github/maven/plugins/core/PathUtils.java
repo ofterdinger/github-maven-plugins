@@ -28,7 +28,7 @@ import org.codehaus.plexus.util.DirectoryScanner;
  *
  * @author Kevin Sawicki (kevin@github.com)
  */
-public class PathUtils {
+public final class PathUtils {
 
 	private PathUtils() {
 		// avoid instances

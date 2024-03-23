@@ -33,7 +33,7 @@ import org.eclipse.egit.github.core.RepositoryId;
  *
  * @author Kevin Sawicki (kevin@github.com)
  */
-public class RepositoryUtils {
+public final class RepositoryUtils {
 
 	private RepositoryUtils() {
 		// avoid instances
@@ -83,10 +83,12 @@ public class RepositoryUtils {
 		Scm scm = project.getScm();
 		if (scm != null) {
 			repo = RepositoryId.createFromUrl(scm.getUrl());
-			if (repo == null)
+			if (repo == null) {
 				repo = extractRepositoryFromScmUrl(scm.getConnection());
-			if (repo == null)
+			}
+			if (repo == null) {
 				repo = extractRepositoryFromScmUrl(scm.getDeveloperConnection());
+			}
 		}
 
 		// Check project URL last
