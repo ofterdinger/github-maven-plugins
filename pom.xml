@@ -71,7 +71,7 @@
     <commons-lang3.version>3.14.0</commons-lang3.version>
 
     <!-- https://search.maven.org/artifact/org.apache.maven.doxia/doxia-module-markdown -->
-    <doxia-module-markdown.version>2.0.0-M9</doxia-module-markdown.version>
+    <doxia-module-markdown.version>2.0.0-M10</doxia-module-markdown.version>
 
     <!-- https://search.maven.org/artifact/com.google.guava/guava -->
     <guava.version>33.1.0-jre</guava.version>
@@ -92,16 +92,16 @@
     <org.eclipse.egit.github.core.version>6.1.0.202203080745-r</org.eclipse.egit.github.core.version>
 
     <!-- https://search.maven.org/artifact/org.slf4j/slf4j-reload4j -->
-    <slf4j-reload4j.version>2.0.12</slf4j-reload4j.version>
+    <slf4j-reload4j.version>2.0.13</slf4j-reload4j.version>
 
     <!-- Maven plugins versions-->
     <maven-clean-plugin.version>3.3.2</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
     <maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
-    <maven-gpg-plugin.version>3.2.2</maven-gpg-plugin.version>
+    <maven-gpg-plugin.version>3.2.3</maven-gpg-plugin.version>
     <maven-install-plugin.version>3.1.1</maven-install-plugin.version>
-    <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
+    <maven-jar-plugin.version>3.4.0</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
     <maven-plugin-annotations.version>3.12.0</maven-plugin-annotations.version>
     <maven-plugin-plugin.version>3.12.0</maven-plugin-plugin.version>
