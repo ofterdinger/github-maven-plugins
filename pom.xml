@@ -92,7 +92,7 @@
     <org.eclipse.egit.github.core.version>6.1.0.202203080745-r</org.eclipse.egit.github.core.version>
 
     <!-- https://search.maven.org/artifact/org.slf4j/slf4j-reload4j -->
-    <slf4j-reload4j.version>2.0.12</slf4j-reload4j.version>
+    <slf4j-reload4j.version>2.0.13</slf4j-reload4j.version>
 
     <!-- Maven plugins versions-->
     <maven-clean-plugin.version>3.3.2</maven-clean-plugin.version>
