@@ -71,7 +71,7 @@
     <commons-lang3.version>3.14.0</commons-lang3.version>
 
     <!-- https://search.maven.org/artifact/org.apache.maven.doxia/doxia-module-markdown -->
-    <doxia-module-markdown.version>2.0.0-M10</doxia-module-markdown.version>
+    <doxia-module-markdown.version>2.0.0-M11</doxia-module-markdown.version>
 
     <!-- https://search.maven.org/artifact/com.google.guava/guava -->
     <guava.version>33.1.0-jre</guava.version>
