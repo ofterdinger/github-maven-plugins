@@ -9,6 +9,7 @@ on:
 
 jobs:
   publish-snapshot:
+    name: Publish Snapshot
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     steps:
@@ -17,7 +18,7 @@ jobs:
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
+          distribution: sapmachine
           java-version: 17
           server-id: ossrh
           server-username: MAVEN_USERNAME
@@ -25,8 +26,8 @@ jobs:
       - name: Setup Maven
         uses: stCarolas/setup-maven@v5
         with:
-          maven-version: 3.9.8
-      - name: Publish package
+          maven-version: 3.9.9
+      - name: Deploy artifacts
         run: mvn -B -ntp clean deploy
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
