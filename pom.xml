@@ -86,7 +86,7 @@
     <mockito.version>5.14.1</mockito.version>
 
     <!-- https://search.maven.org/artifact/org.codehaus.plexus/plexus-utils -->
-    <plexus-utils.version>4.0.1</plexus-utils.version>
+    <plexus-utils.version>4.0.2</plexus-utils.version>
 
     <!-- https://repo.eclipse.org/content/repositories/egit-releases/org/eclipse/mylyn/github/org.eclipse.egit.github.core -->
     <org.eclipse.egit.github.core.version>6.1.0.202203080745-r</org.eclipse.egit.github.core.version>
