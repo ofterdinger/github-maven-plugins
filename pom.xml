@@ -65,10 +65,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.release>17</maven.compiler.release>
 
-    <maven.version>3.9.8</maven.version>
+    <maven.version>3.9.11</maven.version>
 
     <!-- https://search.maven.org/artifact/org.apache.commons/commons-lang3 -->
-    <commons-lang3.version>3.18.0</commons-lang3.version>
+    <commons-lang3.version>3.19.0</commons-lang3.version>
 
     <!-- https://search.maven.org/artifact/org.apache.maven.doxia/doxia-module-markdown -->
     <doxia-module-markdown.version>2.0.0</doxia-module-markdown.version>
