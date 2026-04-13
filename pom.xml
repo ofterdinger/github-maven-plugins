@@ -71,7 +71,7 @@
     <commons-lang3.version>3.20.0</commons-lang3.version>
 
     <!-- https://search.maven.org/artifact/org.apache.maven.doxia/doxia-module-markdown -->
-    <doxia-module-markdown.version>2.0.0</doxia-module-markdown.version>
+    <doxia-module-markdown.version>2.1.0</doxia-module-markdown.version>
 
     <!-- https://search.maven.org/artifact/com.google.guava/guava -->
     <guava.version>33.5.0-jre</guava.version>
@@ -86,7 +86,7 @@
     <mockito.version>5.23.0</mockito.version>
 
     <!-- https://search.maven.org/artifact/org.codehaus.plexus/plexus-utils -->
-    <plexus-utils.version>4.0.2</plexus-utils.version>
+    <plexus-utils.version>4.0.3</plexus-utils.version>
 
     <!-- https://repo.eclipse.org/content/repositories/egit-releases/org/eclipse/mylyn/github/org.eclipse.egit.github.core -->
     <org.eclipse.egit.github.core.version>6.1.0.202203080745-r</org.eclipse.egit.github.core.version>
