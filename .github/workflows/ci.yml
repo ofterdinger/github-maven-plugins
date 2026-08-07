@@ -21,12 +21,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Setup JDK ${{ matrix.java-version }}
-        uses: actions/setup-java@v5.1.0
+        uses: actions/setup-java@v5.7.0
         with:
           distribution: sapmachine
           java-version: ${{ matrix.java-version }}
       - name: Setup Maven
-        uses: stCarolas/setup-maven@v5.7
+        uses: stCarolas/setup-maven@v5.1
         with:
           maven-version: 3.9.16
       - name: Build with Maven
